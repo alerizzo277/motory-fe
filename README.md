@@ -143,3 +143,19 @@ LoginPage → useAuth → AuthProvider → LOGIN → Apollo → authLink → Nes
                               ME → utente Apollo → guard → HomePage
 UNAUTHENTICATED → ErrorLink → elimina token/cache → guard → LoginPage
 ```
+
+## Tema e identità visiva
+
+I token globali di Motory sono definiti in `src/styles/theme.css` e importati da
+`src/index.css`: colori semantici, tipografia, spaziature, raggi e ombra delle card.
+Gli stili di pagina sono in `features/auth/pages/LoginPage.css`, mentre
+`shared/components/BrandLogo` riutilizza l'asset originale `assets/brand/logo.svg`
+(simbolo + wordmark) con la tagline «Your car's story».
+
+Inter Variable è servito localmente con `@fontsource-variable/inter`, importato
+una sola volta nel bootstrap; `font-display: swap` mantiene il testo visibile
+mentre il font viene caricato. Non sono richieste connessioni a Google Fonts.
+
+Per registrazione e layout autenticato, riutilizzare i token e BrandLogo,
+aggiungendo solo gli stili propri della nuova feature. La logica auth non dipende
+dal tema. Nessuna libreria di icone o design system è stata introdotta.

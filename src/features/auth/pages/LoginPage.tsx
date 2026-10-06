@@ -2,10 +2,13 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { loginErrorMessage } from '../../../graphql/client/errors'
-import { BrandLogo } from '../../../shared/components/BrandLogo'
-import './LoginPage.css'
+import { Link, useLocation } from 'react-router-dom'
+import { AuthLayout } from '../components/AuthLayout'
 export function LoginPage() {
   const { login } = useAuth()
+  const location = useLocation()
+  const state: unknown = location.state
+  const registered = typeof state === 'object' && state !== null && 'registered' in state && state.registered === true
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -21,16 +24,11 @@ export function LoginPage() {
     finally { setSubmitting(false) }
   }
   return (
-    <main className="card login-card" aria-labelledby="login-title">
-      <header className="login-card__header">
-        <BrandLogo />
-        <div className="login-card__intro">
-          <h1 id="login-title">Bentornato</h1>
-          <p>Accedi al tuo account Motory.</p>
-        </div>
-      </header>
-      <form className="login-form" onSubmit={submit} aria-busy={submitting}>
-        <div className="login-form__field">
+    <AuthLayout titleId="login-title" title="Bentornato" description="Accedi al tuo account Motory."
+      footer={<>Non hai ancora un account? <Link to="/register">Registrati</Link></>}>
+      {registered && <p className="auth-notice" role="status">Registrazione completata. Ora puoi accedere.</p>}
+      <form className="auth-form" onSubmit={submit} aria-busy={submitting}>
+        <div className="auth-form__field">
           <label htmlFor="email">Email</label>
           <input
             id="email"
@@ -45,7 +43,7 @@ export function LoginPage() {
             aria-describedby={error ? 'login-error' : undefined}
           />
         </div>
-        <div className="login-form__field">
+        <div className="auth-form__field">
           <label htmlFor="password">Password</label>
           <input
             id="password"
@@ -60,11 +58,11 @@ export function LoginPage() {
             aria-describedby={error ? 'login-error' : undefined}
           />
         </div>
-        {error && <p id="login-error" className="error login-form__error" role="alert">{error}</p>}
-        <button className="login-form__submit" disabled={submitting} type="submit">
+        {error && <p id="login-error" className="error auth-form__error" role="alert">{error}</p>}
+        <button className="auth-form__submit" disabled={submitting} type="submit">
           {submitting ? 'Accesso in corso…' : 'Accedi'}
         </button>
       </form>
-    </main>
+    </AuthLayout>
   )
 }

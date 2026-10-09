@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useApolloClient } from '@apollo/client/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { PasswordInput } from '../components/PasswordInput'
+import { ResendVerification } from '../components/ResendVerification'
 import { REGISTER } from '../api/operations'
 import { registerErrors } from '../api/registerErrors'
 import { AuthLayout } from '../components/AuthLayout'
@@ -18,29 +20,36 @@ const fields = [
 
 export function RegisterPage() {
   const client = useApolloClient()
-  const navigate = useNavigate()
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
   const pending = useRef(false)
   const [form, setForm] = useState<RegisterForm>({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' })
-  const [errors, setErrors] = useState<RegisterFieldErrors>({})
+  const [serverErrors, setServerErrors] = useState<RegisterFieldErrors>({})
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
+  const [blurred, setBlurred] = useState<Partial<Record<keyof RegisterForm, boolean>>>({})
+  const validation = validateRegister(form)
+  const isValid = Object.keys(validation).length === 0 && Object.values(serverErrors).every((message) => !message)
+
+  function changeField(name: keyof RegisterForm, value: string) {
+    setForm((current) => ({ ...current, [name]: value }))
+    setServerErrors((current) => ({ ...current, [name]: undefined }))
+    setError(null)
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (pending.current) return
+    if (pending.current || !isValid) return
     setError(null)
-    const validation = validateRegister(form)
-    setErrors(validation)
-    if (Object.keys(validation).length) return
     pending.current = true
     setSubmitting(true)
     try {
       const result = await client.mutate({ mutation: REGISTER, variables: { input: registerInput(form) }, fetchPolicy: 'no-cache' })
       if (!result.data?.register) throw new Error('Missing register response')
-      navigate('/login', { replace: true, state: { registered: true } })
+      setRegisteredEmail(result.data.register.email)
     } catch (cause: unknown) {
       const result = registerErrors(cause)
-      setErrors(result.fields)
+      setServerErrors(result.fields)
       setError(result.message)
     } finally {
       pending.current = false
@@ -48,18 +57,27 @@ export function RegisterPage() {
     }
   }
 
+  if (registeredEmail) return <AuthLayout titleId="check-email-title" title="Controlla la tua email" description="Apri il link ricevuto per completare la registrazione." footer={<Link to="/login">Torna al login</Link>}>
+    <p className="auth-notice">Abbiamo inviato un link di verifica a: <strong>{registeredEmail}</strong></p>
+    <ResendVerification email={registeredEmail} />
+  </AuthLayout>
+
   return <AuthLayout titleId="register-title" title="Crea un account" description="Registrati per iniziare con Motory."
     footer={<>Hai già un account? <Link to="/login">Accedi</Link></>}>
     <form className="auth-form" onSubmit={submit} noValidate aria-busy={submitting}>
-      {fields.map(({ name, label, ...inputProps }) => <div className="auth-form__field" key={name}>
+      {fields.map(({ name, label, type, ...inputProps }) => {
+        const fieldError = serverErrors[name] ?? (blurred[name] ? validation[name] : undefined)
+        const Input = type === 'password' ? PasswordInput : 'input'
+        return <div className="auth-form__field" key={name}>
         <label htmlFor={name}>{label}</label>
-        <input {...inputProps} id={name} name={name} required value={form[name]} disabled={submitting}
-          aria-invalid={!!errors[name]} aria-describedby={errors[name] ? `${name}-error` : undefined}
-          onChange={(event) => setForm({ ...form, [name]: event.target.value })} />
-        {errors[name] && <p id={`${name}-error`} className="error auth-field-error" role="alert">{errors[name]}</p>}
-      </div>)}
+        <Input {...inputProps} {...(type !== 'password' ? { type } : {})} id={name} name={name} required value={form[name]} disabled={submitting}
+          aria-invalid={!!fieldError} aria-describedby={fieldError ? `${name}-error` : undefined}
+          onBlur={() => setBlurred((current) => ({ ...current, [name]: true }))}
+          onChange={(event) => changeField(name, event.target.value)} />
+        {fieldError && <p id={`${name}-error`} className="error auth-field-error" role="alert">{fieldError}</p>}
+      </div>})}
       {error && <p className="error auth-form__error" role="alert">{error}</p>}
-      <button className="auth-form__submit" type="submit" disabled={submitting}>{submitting ? 'Registrazione…' : 'Registrati'}</button>
+      <button className="auth-form__submit" type="submit" disabled={submitting || !isValid}>{submitting ? 'Registrazione…' : 'Registrati'}</button>
     </form>
   </AuthLayout>
 }

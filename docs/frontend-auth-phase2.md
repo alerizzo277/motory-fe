@@ -30,5 +30,17 @@ locale di Chrome. Playwright avvia Vite su 127.0.0.1:5174 e simula GraphQL; non 
 server backend né invia email. La suite backend valida tutte le operazioni di operations.ts
 contro lo schema NestJS via introspection.
 
-Risultati: build/lint superati; 7 test Node e 7 browser. I browser coprono anche StrictMode,
+Risultati: build/lint superati; 7 test Node e 12 browser. I browser coprono anche StrictMode,
 show/hide senza submit, accessibilità dei label e viewport 320 px.
+
+## Registrazione e reinvio — aggiornamento 9 ottobre 2026
+
+RegisterPayload contiene user e warnings. VERIFICATION_EMAIL_SEND_FAILED è un warning
+applicativo e non annulla la registrazione. La schermata Controlla la tua email compare
+anche se l'invio fallisce, con warning nel tema Motory e pulsante Reinvia email presente.
+Resend restituisce AuthWarningsPayload, usato anche da EmailRequestPage.
+
+Il pulsante usa un countdown di 60 secondi dopo la registrazione e dopo ogni risposta
+applicativa del reinvio (anche con warning, coerentemente col token creato nel backend).
+Una scadenza Date.now e un intervallo aggiornano il tempo rimanente senza deriva.
+I test Playwright simulano il tempo, verificando 60 → 59 → 0 e la ripartenza a 60.

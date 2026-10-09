@@ -8,7 +8,7 @@ import { REGISTER } from '../api/operations'
 import { registerErrors } from '../api/registerErrors'
 import { AuthLayout } from '../components/AuthLayout'
 import { registerInput, validateRegister } from '../registerValidation'
-import type { RegisterFieldErrors, RegisterForm } from '../types/auth'
+import type { RegisterPayload, RegisterFieldErrors, RegisterForm } from '../types/auth'
 
 const fields = [
   { name: 'firstName', label: 'Nome', type: 'text', autoComplete: 'given-name', maxLength: 100 },
@@ -20,7 +20,7 @@ const fields = [
 
 export function RegisterPage() {
   const client = useApolloClient()
-  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
+  const [registered, setRegistered] = useState<RegisterPayload | null>(null)
   const pending = useRef(false)
   const [form, setForm] = useState<RegisterForm>({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' })
   const [serverErrors, setServerErrors] = useState<RegisterFieldErrors>({})
@@ -46,7 +46,7 @@ export function RegisterPage() {
     try {
       const result = await client.mutate({ mutation: REGISTER, variables: { input: registerInput(form) }, fetchPolicy: 'no-cache' })
       if (!result.data?.register) throw new Error('Missing register response')
-      setRegisteredEmail(result.data.register.email)
+      setRegistered(result.data.register)
     } catch (cause: unknown) {
       const result = registerErrors(cause)
       setServerErrors(result.fields)
@@ -57,10 +57,14 @@ export function RegisterPage() {
     }
   }
 
-  if (registeredEmail) return <AuthLayout titleId="check-email-title" title="Controlla la tua email" description="Apri il link ricevuto per completare la registrazione." footer={<Link to="/login">Torna al login</Link>}>
-    <p className="auth-notice">Abbiamo inviato un link di verifica a: <strong>{registeredEmail}</strong></p>
-    <ResendVerification email={registeredEmail} />
-  </AuthLayout>
+  if (registered) {
+    const sendFailed = registered.warnings.some(({ code }) => code === 'VERIFICATION_EMAIL_SEND_FAILED')
+    return <AuthLayout titleId="check-email-title" title="Controlla la tua email" description={sendFailed ? 'Account creato correttamente.' : 'Controlla la tua casella di posta per completare la registrazione.'} footer={<Link to="/login">Torna al login</Link>}>
+      <p className="auth-notice">{sendFailed ? 'Indirizzo email:' : "Ti abbiamo inviato un’email di verifica a:"} <strong>{registered.user.email}</strong></p>
+      {sendFailed && <p className="auth-warning" role="status">Non siamo riusciti a inviare l'email di verifica. Puoi provare a inviarla nuovamente tra poco.</p>}
+      <ResendVerification email={registered.user.email} initialCooldown={60} />
+    </AuthLayout>
+  }
 
   return <AuthLayout titleId="register-title" title="Crea un account" description="Registrati per iniziare con Motory."
     footer={<>Hai già un account? <Link to="/login">Accedi</Link></>}>

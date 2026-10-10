@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useApolloClient } from '@apollo/client/react';
@@ -11,19 +12,37 @@ import { registerInput, validateRegister } from '../registerValidation';
 import type { RegisterPayload, RegisterFieldErrors, RegisterForm } from '../types/auth';
 
 const fields = [
-  { name: 'firstName', label: 'Nome', type: 'text', autoComplete: 'given-name', maxLength: 100 },
-  { name: 'lastName', label: 'Cognome', type: 'text', autoComplete: 'family-name', maxLength: 100 },
-  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email', maxLength: 254 },
+  {
+    name: 'firstName',
+    label: 'common:fields.firstName',
+    type: 'text',
+    autoComplete: 'given-name',
+    maxLength: 100,
+  },
+  {
+    name: 'lastName',
+    label: 'common:fields.lastName',
+    type: 'text',
+    autoComplete: 'family-name',
+    maxLength: 100,
+  },
+  {
+    name: 'email',
+    label: 'common:fields.email',
+    type: 'email',
+    autoComplete: 'email',
+    maxLength: 254,
+  },
   {
     name: 'password',
-    label: 'Password',
+    label: 'common:fields.password',
     type: 'password',
     autoComplete: 'new-password',
     maxLength: 128,
   },
   {
     name: 'confirmPassword',
-    label: 'Conferma password',
+    label: 'common:fields.confirmPassword',
     type: 'password',
     autoComplete: 'new-password',
     maxLength: 128,
@@ -31,6 +50,7 @@ const fields = [
 ] as const;
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const [registered, setRegistered] = useState<RegisterPayload | null>(null);
   const pending = useRef(false);
@@ -88,16 +108,12 @@ export function RegisterPage() {
     return (
       <AuthLayout
         titleId="check-email-title"
-        title="Controlla la tua email"
-        description={
-          sendFailed
-            ? 'Account creato correttamente.'
-            : 'Controlla la tua casella di posta per completare la registrazione.'
-        }
-        footer={<Link to="/login">Torna al login</Link>}
+        title={t('auth:register.checkEmail')}
+        description={sendFailed ? t('auth:register.success') : t('auth:register.checkInbox')}
+        footer={<Link to="/login">{t('auth:actions.backToLogin')}</Link>}
       >
         <p className="auth-notice">
-          {sendFailed ? 'Indirizzo email:' : 'Ti abbiamo inviato un’email di verifica a:'}{' '}
+          {sendFailed ? t('auth:register.emailAddress') : t('auth:register.verificationSentTo')}{' '}
           <strong>{registered.user.email}</strong>
         </p>
         {sendFailed && (
@@ -105,8 +121,7 @@ export function RegisterPage() {
             className="auth-warning"
             role="status"
           >
-            Non siamo riusciti a inviare l'email di verifica. Puoi provare a inviarla nuovamente tra
-            poco.
+            {t('auth:register.deliveryWarning')}
           </p>
         )}
         <ResendVerification
@@ -120,11 +135,11 @@ export function RegisterPage() {
   return (
     <AuthLayout
       titleId="register-title"
-      title="Crea un account"
-      description="Registrati per iniziare con Motory."
+      title={t('auth:register.title')}
+      description={t('auth:register.description')}
       footer={
         <>
-          Hai già un account? <Link to="/login">Accedi</Link>
+          {t('auth:register.hasAccount')} <Link to="/login">{t('auth:login.submit')}</Link>
         </>
       }
     >
@@ -142,7 +157,7 @@ export function RegisterPage() {
               className="auth-form__field"
               key={name}
             >
-              <label htmlFor={name}>{label}</label>
+              <label htmlFor={name}>{t(label)}</label>
               <Input
                 {...inputProps}
                 {...(type !== 'password' ? { type } : {})}
@@ -162,7 +177,7 @@ export function RegisterPage() {
                   className="error auth-field-error"
                   role="alert"
                 >
-                  {fieldError}
+                  {t(fieldError)}
                 </p>
               )}
             </div>
@@ -173,7 +188,7 @@ export function RegisterPage() {
             className="error auth-form__error"
             role="alert"
           >
-            {error}
+            {t(error)}
           </p>
         )}
         <button
@@ -181,7 +196,7 @@ export function RegisterPage() {
           type="submit"
           disabled={submitting || !isValid}
         >
-          {submitting ? 'Registrazione…' : 'Registrati'}
+          {submitting ? t('auth:register.busy') : t('auth:register.submit')}
         </button>
       </form>
     </AuthLayout>

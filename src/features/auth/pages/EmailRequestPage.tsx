@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useApolloClient } from '@apollo/client/react';
@@ -7,6 +8,7 @@ import { FORGOT_PASSWORD, RESEND_VERIFICATION } from '../api/operations';
 import { AuthLayout } from '../components/AuthLayout';
 
 export function EmailRequestPage({ verification = false }: { verification?: boolean }) {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const pending = useRef(false);
   const [email, setEmail] = useState('');
@@ -42,7 +44,7 @@ export function EmailRequestPage({ verification = false }: { verification?: bool
       }
       setSent(true);
     } catch {
-      setError('Invio non riuscito. Controlla l’email e riprova tra poco.');
+      setError('auth:errors.emailRequestFailed');
     } finally {
       pending.current = false;
       setBusy(false);
@@ -51,13 +53,9 @@ export function EmailRequestPage({ verification = false }: { verification?: bool
   return (
     <AuthLayout
       titleId="email-request-title"
-      title={verification ? 'Reinvia email di verifica' : 'Password dimenticata?'}
-      description={
-        verification
-          ? 'Richiedi un nuovo link per completare la registrazione.'
-          : 'Ricevi le istruzioni per recuperare il tuo account.'
-      }
-      footer={<Link to="/login">Torna al login</Link>}
+      title={verification ? t('auth:resend.title') : t('auth:forgot.title')}
+      description={verification ? t('auth:resend.description') : t('auth:forgot.description')}
+      footer={<Link to="/login">{t('auth:actions.backToLogin')}</Link>}
     >
       {sent ? (
         <>
@@ -66,10 +64,10 @@ export function EmailRequestPage({ verification = false }: { verification?: bool
             role="status"
           >
             {warning
-              ? "Non siamo riusciti a inviare l'email di verifica. Riprova più tardi."
+              ? t('auth:resend.deliveryWarning')
               : verification
-                ? "Se l'account necessita ancora di verifica, riceverai una nuova email."
-                : 'Se esiste un account associato a questa email, riceverai le istruzioni per reimpostare la password.'}
+                ? t('auth:resend.success')
+                : t('auth:forgot.success')}
           </p>
           {verification && (
             <ResendVerification
@@ -85,7 +83,7 @@ export function EmailRequestPage({ verification = false }: { verification?: bool
           aria-busy={busy}
         >
           <div className="auth-form__field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('common:fields.email')}</label>
             <input
               id="email"
               type="email"
@@ -102,14 +100,18 @@ export function EmailRequestPage({ verification = false }: { verification?: bool
               className="error auth-form__error"
               role="alert"
             >
-              {error}
+              {t(error)}
             </p>
           )}
           <button
             className="auth-form__submit"
             disabled={busy}
           >
-            {busy ? 'Invio…' : verification ? 'Reinvia email' : 'Invia link di recupero'}
+            {busy
+              ? t('common:actions.sending')
+              : verification
+                ? t('auth:resend.submit')
+                : t('auth:forgot.submit')}
           </button>
         </form>
       )}

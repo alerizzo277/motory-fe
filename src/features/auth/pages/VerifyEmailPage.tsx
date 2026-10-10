@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client/react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { hasErrorCode } from '../../../graphql/client/errors';
 import { EmailRequestPage } from './EmailRequestPage';
 
 export function VerifyEmailPage() {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const [params] = useSearchParams();
   const token = params.get('token') ?? '';
@@ -52,51 +54,49 @@ export function VerifyEmailPage() {
   return (
     <AuthLayout
       titleId="verify-title"
-      title="Verifica email"
-      description="Completa la registrazione a Motory."
-      footer={<Link to="/login">Torna al login</Link>}
+      title={t('auth:verify.title')}
+      description={t('auth:verify.description')}
+      footer={<Link to="/login">{t('auth:actions.backToLogin')}</Link>}
     >
       <div
         className="auth-notice"
         role={status === 'invalid' || status === 'error' ? 'alert' : 'status'}
       >
-        {status === 'loading' && <p>Verifica in corso…</p>}
+        {status === 'loading' && <p>{t('auth:verify.busy')}</p>}
         {status === 'success' && (
           <>
-            <p>Email verificata correttamente.</p>
-            <p>Ora puoi accedere a Motory.</p>
+            <p>{t('auth:verify.success')}</p>
+            <p>{t('auth:verify.signIn')}</p>
             <Link
               className="auth-link-button"
               to="/login"
             >
-              Accedi
+              {t('auth:login.submit')}
             </Link>
           </>
         )}
         {status === 'invalid' && (
           <>
-            <p>Il link di verifica non è più valido.</p>
-            <p>
-              L'account potrebbe essere già stato attivato oppure il link potrebbe essere scaduto.
-            </p>
+            <p>{t('auth:verify.invalid')}</p>
+            <p>{t('auth:verify.invalidReason')}</p>
             <button
               type="button"
               onClick={() => setResend(true)}
             >
-              Reinvia email di verifica
+              {t('auth:resend.title')}
             </button>
           </>
         )}
         {status === 'error' && (
           <>
-            <p>Verifica non riuscita. Riprova tra poco.</p>
+            <p>{t('auth:verify.failed')}</p>
             <button
               onClick={() => {
                 setResult(null);
                 setRetry(retry + 1);
               }}
             >
-              Riprova
+              {t('common:actions.retry')}
             </button>
           </>
         )}

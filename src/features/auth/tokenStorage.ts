@@ -4,7 +4,12 @@ function notify() {
   listeners.forEach((listener) => listener());
 }
 export function getAccessToken() {
-  return localStorage.getItem(KEY);
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    // Public pages must remain available when browser storage is disabled.
+    return null;
+  }
 }
 export function setAccessToken(token: string) {
   localStorage.setItem(KEY, token);

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client/react';
 import { RESEND_VERIFICATION } from '../api/operations';
@@ -9,6 +10,7 @@ export function ResendVerification({
   email: string;
   initialCooldown?: number;
 }) {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const pending = useRef(false);
   const [busy, setBusy] = useState(false);
@@ -39,17 +41,13 @@ export function ResendVerification({
         ({ code }) => code === 'VERIFICATION_EMAIL_SEND_FAILED',
       );
       setWarning(failed);
-      setMessage(
-        failed
-          ? "Non siamo riusciti a inviare l'email di verifica. Riprova più tardi."
-          : "Se l'account necessita ancora di verifica, riceverai una nuova email.",
-      );
+      setMessage(failed ? 'auth:resend.deliveryWarning' : 'auth:resend.success');
       // A provider failure also creates a token: respect its backend cooldown.
       setDeadline(Date.now() + 60000);
       setRemaining(60);
     } catch {
       setWarning(true);
-      setMessage('Invio non riuscito. Riprova più tardi.');
+      setMessage('auth:errors.resendFailed');
     } finally {
       pending.current = false;
       setBusy(false);
@@ -64,19 +62,15 @@ export function ResendVerification({
           void resend();
         }}
       >
-        {busy ? 'Invio…' : 'Reinvia email'}
+        {busy ? t('common:actions.sending') : t('auth:resend.submit')}
       </button>
-      {remaining > 0 && (
-        <p>
-          Puoi richiedere un nuovo invio tra {remaining} {remaining === 1 ? 'secondo' : 'secondi'}.
-        </p>
-      )}
+      {remaining > 0 && <p>{t('auth:resend.cooldown', { count: remaining })}</p>}
       {message && (
         <p
           className={warning ? 'auth-warning' : undefined}
           role="status"
         >
-          {message}
+          {t(message)}
         </p>
       )}
     </div>

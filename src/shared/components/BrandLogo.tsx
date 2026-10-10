@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import logo from '../../assets/brand/logo.svg';
 import './BrandLogo.css';
 
 export function BrandLogo() {
+  const { t } = useTranslation();
   return (
     <div className="brand-logo">
       <img
@@ -10,7 +12,7 @@ export function BrandLogo() {
         width={720}
         height={166}
       />
-      <p lang="en">Your car's story</p>
+      <p>{t('common:brand.tagline')}</p>
     </div>
   );
 }

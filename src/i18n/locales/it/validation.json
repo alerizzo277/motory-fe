@@ -1,0 +1,13 @@
+{
+  "passwordRequired": "Inserisci la password.",
+  "passwordMaxLength": "La password deve contenere al massimo 128 caratteri.",
+  "firstNameInvalid": "Inserisci un nome valido (massimo 100 caratteri).",
+  "lastNameInvalid": "Inserisci un cognome valido (massimo 100 caratteri).",
+  "firstNameRequired": "Inserisci il nome (massimo 100 caratteri).",
+  "lastNameRequired": "Inserisci il cognome (massimo 100 caratteri).",
+  "emailInvalid": "Inserisci un’email valida (massimo 254 caratteri).",
+  "passwordLength": "Inserisci una password da 8 a 128 caratteri.",
+  "confirmPasswordRequired": "Conferma la password.",
+  "passwordMismatch": "Le password non coincidono.",
+  "checkFields": "Controlla i dati inseriti e riprova."
+}

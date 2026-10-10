@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { BrandLogo } from '../../../shared/components/BrandLogo';
 import './AuthLayout.css';
 
 export function AuthLayout({
@@ -21,7 +20,6 @@ export function AuthLayout({
       aria-labelledby={titleId}
     >
       <header className="auth-card__header">
-        <BrandLogo />
         <div className="auth-card__intro">
           <h1 id={titleId}>{title}</h1>
           <p>{description}</p>

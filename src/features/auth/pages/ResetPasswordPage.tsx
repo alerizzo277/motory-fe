@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useApolloClient } from '@apollo/client/react';
@@ -9,6 +10,7 @@ import { PasswordInput } from '../components/PasswordInput';
 import { hasErrorCode } from '../../../graphql/client/errors';
 
 export function ResetPasswordPage() {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const [params] = useSearchParams();
   const token = params.get('token') ?? '';
@@ -45,8 +47,8 @@ export function ResetPasswordPage() {
       else
         setError(
           hasErrorCode(cause, 'VALIDATION_ERROR')
-            ? 'Inserisci una password da 8 a 128 caratteri.'
-            : 'Operazione non riuscita. Riprova tra poco.',
+            ? 'validation:passwordLength'
+            : 'common:errors.operationFailed',
         );
     } finally {
       pending.current = false;
@@ -56,31 +58,31 @@ export function ResetPasswordPage() {
   return (
     <AuthLayout
       titleId="reset-title"
-      title="Reimposta la password"
-      description="Scegli una nuova password per Motory."
-      footer={<Link to="/login">Torna al login</Link>}
+      title={t('auth:reset.title')}
+      description={t('auth:reset.description')}
+      footer={<Link to="/login">{t('auth:actions.backToLogin')}</Link>}
     >
       {!token || invalid ? (
         <div
           className="auth-notice"
           role="alert"
         >
-          <p>Il link per reimpostare la password non è più valido.</p>
-          <p>Potrebbe essere scaduto oppure essere già stato utilizzato.</p>
-          <Link to="/forgot-password">Richiedi un nuovo link</Link>
+          <p>{t('auth:reset.invalid')}</p>
+          <p>{t('auth:reset.invalidReason')}</p>
+          <Link to="/forgot-password">{t('auth:reset.requestLink')}</Link>
         </div>
       ) : success ? (
         <div
           className="auth-notice"
           role="status"
         >
-          <p>Password aggiornata correttamente.</p>
-          <p>Ora puoi accedere con la nuova password.</p>
+          <p>{t('auth:reset.success')}</p>
+          <p>{t('auth:reset.signIn')}</p>
           <Link
             className="auth-link-button"
             to="/login"
           >
-            Accedi
+            {t('auth:login.submit')}
           </Link>
         </div>
       ) : (
@@ -90,7 +92,7 @@ export function ResetPasswordPage() {
           aria-busy={busy}
         >
           <div className="auth-form__field">
-            <label htmlFor="new-password">Nuova password</label>
+            <label htmlFor="new-password">{t('common:fields.newPassword')}</label>
             <PasswordInput
               id="new-password"
               autoComplete="new-password"
@@ -113,12 +115,12 @@ export function ResetPasswordPage() {
                 className="error auth-field-error"
                 role="alert"
               >
-                {passwordError}
+                {t(passwordError)}
               </p>
             )}
           </div>
           <div className="auth-form__field">
-            <label htmlFor="confirm-password">Conferma password</label>
+            <label htmlFor="confirm-password">{t('common:fields.confirmPassword')}</label>
             <PasswordInput
               id="confirm-password"
               autoComplete="new-password"
@@ -140,7 +142,7 @@ export function ResetPasswordPage() {
                 className="error auth-field-error"
                 role="alert"
               >
-                {confirmError}
+                {t(confirmError)}
               </p>
             )}
           </div>
@@ -149,14 +151,14 @@ export function ResetPasswordPage() {
               className="error auth-form__error"
               role="alert"
             >
-              {error}
+              {t(error)}
             </p>
           )}
           <button
             className="auth-form__submit"
             disabled={busy || !isValid}
           >
-            {busy ? 'Aggiornamento…' : 'Reimposta password'}
+            {busy ? t('auth:reset.busy') : t('auth:reset.submit')}
           </button>
         </form>
       )}

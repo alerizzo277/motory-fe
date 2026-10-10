@@ -1,0 +1,13 @@
+{
+  "passwordRequired": "Enter your password.",
+  "passwordMaxLength": "Your password must be no longer than 128 characters.",
+  "firstNameInvalid": "Enter a valid first name (up to 100 characters).",
+  "lastNameInvalid": "Enter a valid last name (up to 100 characters).",
+  "firstNameRequired": "Enter your first name (up to 100 characters).",
+  "lastNameRequired": "Enter your last name (up to 100 characters).",
+  "emailInvalid": "Enter a valid email address (up to 254 characters).",
+  "passwordLength": "Enter a password between 8 and 128 characters.",
+  "confirmPasswordRequired": "Confirm your password.",
+  "passwordMismatch": "The passwords do not match.",
+  "checkFields": "Check your details and try again."
+}

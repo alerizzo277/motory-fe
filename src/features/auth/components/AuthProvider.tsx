@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
 import { useApolloClient, useQuery } from '@apollo/client/react';
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 // Ogni token identifica una sessione: niente dati o errori della sessione precedente.
 function AuthSession({ children, token }: { children: ReactNode; token: string | null }) {
+  const { t } = useTranslation();
   const client = useApolloClient();
   const { data, loading, error, refetch } = useQuery(ME, {
     skip: !token,
@@ -53,14 +55,14 @@ function AuthSession({ children, token }: { children: ReactNode; token: string |
           className="card"
           role="alert"
         >
-          <h1>Connessione non riuscita</h1>
-          <p>Non è stato possibile verificare la sessione.</p>
+          <h1>{t('auth:session.connectionFailed')}</h1>
+          <p>{t('auth:session.failed')}</p>
           <button
             onClick={() => {
               void refetch().catch(() => undefined);
             }}
           >
-            Riprova
+            {t('common:actions.retry')}
           </button>
           <button
             className="secondary"
@@ -68,7 +70,7 @@ function AuthSession({ children, token }: { children: ReactNode; token: string |
               void logout();
             }}
           >
-            Torna al login
+            {t('auth:actions.backToLogin')}
           </button>
         </main>
       ) : (

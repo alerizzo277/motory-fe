@@ -1,0 +1,39 @@
+{
+  "errors": {
+    "generic": "Si è verificato un errore. Riprova.",
+    "operationFailed": "Operazione non riuscita. Riprova tra poco."
+  },
+  "fields": {
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Conferma password",
+    "newPassword": "Nuova password"
+  },
+  "actions": {
+    "sending": "Invio…",
+    "retry": "Riprova",
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Home page",
+    "development": "Fase di sviluppo",
+    "welcome": "Benvenuto, {{name}}",
+    "role": "Ruolo: {{role}}",
+    "roles": {
+      "USER": "Utente",
+      "ADMIN": "Amministratore"
+    }
+  },
+  "brand": {
+    "tagline": "Your car's story"
+  },
+  "toolbar": {
+    "language": "Lingua",
+    "italian": "Italiano",
+    "english": "English"
+  }
+}

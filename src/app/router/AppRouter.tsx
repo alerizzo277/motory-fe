@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { VerifyEmailPage } from '../../features/auth/pages/VerifyEmailPage';
 import { EmailRequestPage } from '../../features/auth/pages/EmailRequestPage';
 import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
@@ -7,6 +8,7 @@ import { RegisterPage } from '../../features/auth/pages/RegisterPage';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
 import { HomePage } from '../../features/home/pages/HomePage';
 function AuthRoute({ protectedRoute }: { protectedRoute: boolean }) {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuth();
   if (isLoading)
     return (
@@ -14,7 +16,7 @@ function AuthRoute({ protectedRoute }: { protectedRoute: boolean }) {
         className="card"
         role="status"
       >
-        Verifica della sessione…
+        {t('auth:session.checking')}
       </main>
     );
   if (protectedRoute && !isAuthenticated)

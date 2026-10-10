@@ -15,15 +15,14 @@ export function hasErrorCode(error: unknown, code: GraphQLErrorCode): boolean {
     CombinedGraphQLErrors.is(error) && error.errors.some((item) => item.extensions?.code === code)
   );
 }
-export function loginErrorMessage(error: unknown): string {
-  if (hasErrorCode(error, 'EMAIL_NOT_VERIFIED'))
-    return 'Il tuo indirizzo email non è ancora stato verificato. Controlla la tua casella di posta oppure richiedi una nuova email di verifica.';
-  if (hasErrorCode(error, 'INVALID_CREDENTIALS')) return 'Email o password non corretti.';
-  if (hasErrorCode(error, 'UNAUTHENTICATED')) return 'Sessione non valida. Accedi nuovamente.';
-  return 'Accesso non riuscito. Riprova tra poco.';
+export function loginErrorKey(error: unknown): string {
+  if (hasErrorCode(error, 'EMAIL_NOT_VERIFIED')) return 'auth:errors.emailNotVerified';
+  if (hasErrorCode(error, 'INVALID_CREDENTIALS')) return 'auth:errors.invalidCredentials';
+  if (hasErrorCode(error, 'UNAUTHENTICATED')) return 'auth:errors.unauthenticated';
+  return 'auth:errors.loginFailed';
 }
 
-// Il backend espone fields: [{ field, messages }]. Non mostriamo messaggi tecnici.
+// The backend exposes fields: [{ field, messages }]. Never display technical messages.
 export function validationErrorFields(error: unknown): string[] {
   if (!CombinedGraphQLErrors.is(error)) return [];
   return error.errors.flatMap((item) => {

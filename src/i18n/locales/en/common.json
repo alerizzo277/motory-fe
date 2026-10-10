@@ -1,0 +1,39 @@
+{
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "operationFailed": "Unable to complete the operation. Please try again shortly."
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "newPassword": "New password"
+  },
+  "actions": {
+    "sending": "Sending…",
+    "retry": "Try again",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "logout": "Sign out"
+  },
+  "home": {
+    "title": "Home page",
+    "development": "Under development",
+    "welcome": "Welcome, {{name}}",
+    "role": "Role: {{role}}",
+    "roles": {
+      "USER": "User",
+      "ADMIN": "Administrator"
+    }
+  },
+  "brand": {
+    "tagline": "Your car's story"
+  },
+  "toolbar": {
+    "language": "Language",
+    "italian": "Italiano",
+    "english": "English"
+  }
+}

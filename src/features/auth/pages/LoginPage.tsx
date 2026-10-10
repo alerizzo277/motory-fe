@@ -1,12 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { hasErrorCode, loginErrorMessage } from '../../../graphql/client/errors';
+import { hasErrorCode, loginErrorKey } from '../../../graphql/client/errors';
 import { Link } from 'react-router-dom';
 import { PasswordInput } from '../components/PasswordInput';
 import { ResendVerification } from '../components/ResendVerification';
 import { AuthLayout } from '../components/AuthLayout';
 export function LoginPage() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [unverified, setUnverified] = useState(false);
   const [email, setEmail] = useState('');
@@ -16,9 +18,9 @@ export function LoginPage() {
   const [passwordBlurred, setPasswordBlurred] = useState(false);
   const passwordError =
     password.length < 1
-      ? 'Inserisci la password.'
+      ? 'validation:passwordRequired'
       : password.length > 128
-        ? 'La password deve contenere al massimo 128 caratteri.'
+        ? 'validation:passwordMaxLength'
         : null;
   const isValid =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && email.trim().length <= 254 && !passwordError;
@@ -31,7 +33,7 @@ export function LoginPage() {
     try {
       await login({ email: email.trim(), password });
     } catch (cause: unknown) {
-      setError(loginErrorMessage(cause));
+      setError(loginErrorKey(cause));
       setUnverified(hasErrorCode(cause, 'EMAIL_NOT_VERIFIED'));
     } finally {
       setSubmitting(false);
@@ -40,11 +42,11 @@ export function LoginPage() {
   return (
     <AuthLayout
       titleId="login-title"
-      title="Bentornato"
-      description="Accedi al tuo account Motory."
+      title={t('auth:login.title')}
+      description={t('auth:login.description')}
       footer={
         <>
-          Non hai ancora un account? <Link to="/register">Registrati</Link>
+          {t('auth:login.noAccount')} <Link to="/register">{t('auth:register.submit')}</Link>
         </>
       }
     >
@@ -54,12 +56,12 @@ export function LoginPage() {
         aria-busy={submitting}
       >
         <div className="auth-form__field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t('common:fields.email')}</label>
           <input
             id="email"
             type="email"
             autoComplete="username"
-            placeholder="nome@esempio.it"
+            placeholder={t('auth:login.emailPlaceholder')}
             required
             maxLength={254}
             value={email}
@@ -73,11 +75,11 @@ export function LoginPage() {
           />
         </div>
         <div className="auth-form__field">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">{t('common:fields.password')}</label>
           <PasswordInput
             id="password"
             autoComplete="current-password"
-            placeholder="Inserisci la tua password"
+            placeholder={t('auth:login.passwordPlaceholder')}
             required
             maxLength={128}
             value={password}
@@ -103,18 +105,18 @@ export function LoginPage() {
               className="error auth-field-error"
               role="alert"
             >
-              {passwordError}
+              {t(passwordError)}
             </p>
           )}
         </div>
-        <Link to="/forgot-password">Password dimenticata?</Link>
+        <Link to="/forgot-password">{t('auth:forgot.title')}</Link>
         {error && (
           <p
             id="login-error"
             className="error auth-form__error"
             role="alert"
           >
-            {error}
+            {t(error)}
           </p>
         )}
         <button
@@ -122,7 +124,7 @@ export function LoginPage() {
           disabled={submitting || !isValid}
           type="submit"
         >
-          {submitting ? 'Accesso in corso…' : 'Accedi'}
+          {submitting ? t('auth:login.busy') : t('auth:login.submit')}
         </button>
       </form>
       {unverified && <ResendVerification email={email} />}

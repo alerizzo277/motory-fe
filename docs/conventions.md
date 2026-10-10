@@ -111,3 +111,12 @@ These conventions apply to `motory-fe`. They complement `AGENTS.md` and the exis
 ## What not to enforce
 
 Do not impose arbitrary file or component line limits, a custom hook for every GraphQL query, a fixed folder template for each feature, mandatory memoization, or additional architectural layers without a demonstrated need.
+
+## 13. Internationalization
+
+- Initialize i18next once in `src/i18n/index.ts`; use the standard `useTranslation()` hook in components.
+- All user-visible text (including accessible labels and feedback) must use descriptive English translation keys. Avoid hardcoded text in React components.
+- Keep bundled `common`, `auth`, and `validation` resources synchronized in Italian and English; every new key requires both translations.
+- Translate application errors through stable backend codes and preserve field mapping. Store translation keys or structured results in state so visible feedback updates when language changes. Never expose backend messages.
+- Resolve language from a supported stored preference, then the browser primary language subtag, then Italian. Persist only explicit selections through the centralized language helpers.
+- Prefer native `Intl.DateTimeFormat` and `Intl.NumberFormat` with the selected language when formatting is needed. Do not add unnecessary i18n dependencies, detection plugins, or translation backends.

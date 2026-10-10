@@ -88,3 +88,12 @@ export const MAINTENANCE_EVENTS: TypedDocumentNode<
   }
   ${FIELDS}
 `;
+
+export const DELETE_MAINTENANCE_EVENT: TypedDocumentNode<
+  { deleteMaintenanceEvent: boolean },
+  { id: string }
+> = gql`
+  mutation DeleteMaintenanceEvent($id: ID!) {
+    deleteMaintenanceEvent(id: $id)
+  }
+`;

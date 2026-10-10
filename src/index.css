@@ -1,4 +1,18 @@
+@layer theme, base, components, utilities;
+
+/* Preserve Motory's existing base styles by excluding Tailwind Preflight. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
 @import './styles/theme.css';
+
+@theme inline {
+  --color-motory-primary: var(--color-primary);
+  --color-motory-dark-blue: var(--color-primary-hover);
+  --color-motory-navy: var(--color-text-primary);
+  --color-motory-slate: var(--color-text-secondary);
+  --color-motory-light: var(--color-border);
+  --font-sans: var(--font-family-ui);
+}
 
 :root {
   font-family: var(--font-family-ui);

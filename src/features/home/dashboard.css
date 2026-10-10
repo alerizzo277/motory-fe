@@ -1,53 +1,123 @@
 .dashboard {
   padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
-.maintenance-list {
-  list-style: none;
-  padding: 0;
+/* Scope overrides of the legacy global heading/margin rules to this dashboard. */
+.dashboard-heading {
   margin: 0;
-  display: grid;
-  gap: var(--space-3);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  font-weight: 700;
 }
-.maintenance-card {
-  display: block;
-  color: var(--color-text-primary);
-  text-decoration: none;
+.dashboard-summary__title {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
-.maintenance-card:hover {
-  border-color: var(--color-primary);
-}
-.maintenance-card h3 {
+.dashboard-summary p,
+.maintenance-card p {
   margin: 0;
-  font-size: 1.05rem;
 }
-.maintenance-card__category {
-  color: var(--color-text-secondary);
-  margin: var(--space-2) 0;
+.dashboard-empty-title {
+  margin-top: 0;
 }
-.maintenance-card dl {
-  margin: var(--space-3) 0 0;
-  display: grid;
-  gap: var(--space-2);
+.dashboard-selector {
+  width: 100%;
+  min-height: 48px;
+  font: inherit;
+  padding: var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text-primary);
+  background: var(--color-input-background);
 }
-.maintenance-card dt {
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+.dashboard-add {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, var(--color-surface));
+  color: var(--color-primary);
 }
-.maintenance-card dd {
-  margin: var(--space-1) 0 0;
-  font-weight: 600;
+.dashboard-add:hover {
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+}
+.maintenance-list {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+.timeline-item {
+  position: relative;
+  --timeline-color: var(--color-primary);
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  top: 27px;
+  bottom: -27px;
+  left: 15px;
+  width: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+}
+.timeline-item:last-child::before {
+  display: none;
+}
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 11px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--timeline-color);
+  border-radius: 50%;
+  background: var(--color-surface);
+  pointer-events: none;
+}
+.timeline-item--approaching {
+  --timeline-color: var(--color-primary-hover);
+}
+.timeline-item--dueSoon::after {
+  background: var(--timeline-color);
+}
+.timeline-item--overdue,
+.timeline-item--mileageReached {
+  --timeline-color: var(--color-error);
+}
+.timeline-item--completed {
+  --timeline-color: var(--color-text-secondary);
+}
+.timeline-item + .timeline-item .maintenance-card {
+  border-top: 1px solid var(--color-border);
+}
+.maintenance-card {
+  overflow-wrap: anywhere;
+  border-radius: var(--radius-control);
+}
+.maintenance-card:hover {
+  background: var(--color-background);
+}
+.maintenance-card__title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 .maintenance-deadline {
   display: inline-block;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-control);
   background: var(--color-background);
 }
-.maintenance-deadline--approaching,
+.maintenance-deadline--approaching {
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-border);
+}
 .maintenance-deadline--dueSoon {
-  color: var(--color-primary);
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
   border: 1px solid var(--color-primary);
 }
 .maintenance-deadline--overdue,
@@ -56,10 +126,21 @@
   background: var(--color-error-background);
   border: 1px solid var(--color-error-border);
 }
+.dashboard-expand {
+  margin: 0;
+  min-height: 44px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+.dashboard-expand:hover:not(:disabled) {
+  background: var(--color-background);
+}
 .maintenance-fab {
   position: fixed;
   bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
-  right: calc(var(--space-4) + env(safe-area-inset-right, 0px));
+  /* Match the 960px content boundary while respecting mobile safe areas. */
+  right: max(calc(var(--space-4) + env(safe-area-inset-right, 0px)), calc((100vw - 960px) / 2));
   z-index: 10;
   display: flex;
   align-items: center;

@@ -133,8 +133,8 @@ test('FAB, urgency order, five scheduled and five recent, localized format and n
 }) => {
   const { queries } = await setup(page);
   await page.goto('/home');
-  const upcoming = page.getByRole('region', { name: 'Upcoming maintenance' });
-  const recent = page.getByRole('region', { name: 'Recent maintenance' });
+  const upcoming = page.getByRole('region', { name: 'Scheduled maintenance' });
+  const recent = page.getByRole('region', { name: 'Completed maintenance' });
   await expect(upcoming.getByRole('link')).toHaveCount(5);
   await expect(upcoming.getByRole('heading', { level: 3 })).toHaveText([
     'Past date',
@@ -203,7 +203,7 @@ test('query failure is localized, distinct from empty, and retry recovers', asyn
   await page.getByRole('button', { name: 'Try again' }).first().click();
   await expect(page.getByRole('heading', { name: 'Past date' })).toBeVisible();
 });
-for (const width of [320, 375, 428, 768, 1280])
+for (const width of [320, 375, 428, 768, 1280, 2560])
   test(`responsive Italian dashboard ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 760 });
     await setup(page, { language: 'it' });
@@ -217,8 +217,31 @@ for (const width of [320, 375, 428, 768, 1280])
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    const content = await page.locator('main.dashboard').boundingBox();
+    const summary = await page.locator('.dashboard-summary').boundingBox();
+    const scheduled = await page
+      .getByRole('region', { name: 'Manutenzioni programmate' })
+      .boundingBox();
+    const completed = await page
+      .getByRole('region', { name: 'Manutenzioni completate' })
+      .boundingBox();
+    const selector = await page.getByLabel('Scegli veicolo').boundingBox();
+    const add = page.getByRole('link', { name: 'Aggiungi veicolo', exact: true });
+    await expect(add).toHaveAttribute('title', 'Aggiungi veicolo');
+    const addBox = await add.boundingBox();
+    expect(content!.width).toBeLessThanOrEqual(960);
+    expect(Math.abs(content!.x - (width - content!.width) / 2)).toBeLessThan(2);
+    expect(summary!.height).toBeLessThanOrEqual(150);
+    expect(completed!.y).toBeGreaterThan(scheduled!.y + scheduled!.height);
+    expect(completed!.x).toBe(scheduled!.x);
+    expect(completed!.width).toBe(scheduled!.width);
+    expect(selector!.y).toBe(addBox!.y);
+    expect(selector!.x + selector!.width).toBeLessThan(addBox!.x);
+    expect(addBox!.width).toBeGreaterThanOrEqual(44);
+    expect(addBox!.height).toBeGreaterThanOrEqual(44);
     const before = await fab.boundingBox();
     expect(before?.width).toBeGreaterThanOrEqual(44);
+    expect(Math.abs(before!.x + before!.width - (content!.x + content!.width))).toBeLessThan(2);
     await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
     const after = await fab.boundingBox();
     expect(after?.y).toBe(before?.y);
@@ -252,4 +275,103 @@ test('network failures preserve error states and recent cards support keyboard n
   await card.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/maintenance-events\/executed-5$/);
+});
+
+test('timelines expand loaded records independently, localize controls, and reset on vehicle changes', async ({
+  page,
+}) => {
+  const { queries } = await setup(page);
+  await page.goto('/home');
+  const scheduled = page.getByRole('region', { name: 'Scheduled maintenance' });
+  const completed = page.getByRole('region', { name: 'Completed maintenance' });
+  const more = scheduled.getByRole('button', { name: 'Show more' });
+  await expect(more).toHaveAttribute('aria-expanded', 'false');
+  await expect(more).toHaveAttribute('aria-controls', 'upcoming-timeline');
+  await more.focus();
+  await page.keyboard.press('Enter');
+  await expect(scheduled.getByRole('link')).toHaveCount(6);
+  await expect(scheduled.getByRole('heading', { level: 3 }).last()).toHaveText('Sixth scheduled');
+  await expect(completed.getByRole('link')).toHaveCount(5);
+  await completed.getByRole('button', { name: 'Show more' }).click();
+  await expect(completed.getByRole('link')).toHaveCount(6);
+  await expect(completed.getByRole('heading', { level: 3 }).last()).toHaveText('Executed 0');
+  expect(queries.filter((query) => query === 'MaintenanceEvents')).toHaveLength(1);
+  await page.getByLabel('Language').selectOption('it');
+  const less = page
+    .getByRole('region', { name: 'Manutenzioni programmate' })
+    .getByRole('button', { name: 'Mostra meno' });
+  await expect(less).toHaveAttribute('aria-expanded', 'true');
+  await less.click();
+  await expect(page.locator('#upcoming-timeline').getByRole('link')).toHaveCount(5);
+  await expect(page.getByRole('button', { name: 'Mostra di più' })).toBeVisible();
+  await page.getByLabel('Scegli veicolo').selectOption('vehicle-2');
+  await expect(page.getByRole('heading', { name: 'Other vehicle event' })).toBeVisible();
+  await expect(page.locator('.dashboard-expand')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Ford Focus' })).toBeVisible();
+  await expect(page.getByText('Chilometraggio non disponibile')).toBeVisible();
+  await page.getByLabel('Scegli veicolo').selectOption('vehicle-1');
+  await expect(page.locator('#upcoming-timeline').getByRole('link')).toHaveCount(5);
+  await expect(page.locator('#recent-timeline').getByRole('link')).toHaveCount(5);
+});
+
+test('compact add vehicle icon has a localized name and supports keyboard navigation', async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto('/home');
+  const add = page.getByRole('link', { name: 'Add vehicle', exact: true });
+  await expect(add).toHaveCount(1);
+  await expect(add).toHaveText('');
+  await expect(add).toHaveAttribute('title', 'Add vehicle');
+  await expect(add).toHaveAttribute('href', '/vehicles/new');
+  await add.focus();
+  await expect(add).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/vehicles\/new$/);
+});
+
+test('long vehicle and timeline text wrap without horizontal overflow at 320px', async ({
+  page,
+}) => {
+  await setup(page);
+  await page.setViewportSize({ width: 320, height: 760 });
+  await page.route('**/graphql', async (route) => {
+    const { operationName } = route.request().postDataJSON();
+    if (operationName === 'Vehicles')
+      return route.fulfill({
+        json: {
+          data: {
+            vehicles: [
+              {
+                __typename: 'Vehicle',
+                id: 'vehicle-1',
+                brand: 'A'.repeat(80),
+                model: 'Very long model name',
+                year: 2020,
+                licensePlate: 'AB123CD',
+                fuelType: 'PLUG_IN_HYBRID',
+                latestOdometerKm: 10000,
+              },
+            ],
+          },
+        },
+      });
+    if (operationName === 'MaintenanceEvents')
+      return route.fulfill({
+        json: {
+          data: {
+            maintenanceEvents: [
+              { ...base, id: 'long', name: 'Oil'.repeat(60), scheduledOdometerKm: 10000 },
+            ],
+          },
+        },
+      });
+    return route.fallback();
+  });
+  await page.goto('/home');
+  await expect(page.getByRole('heading', { name: 'Oil'.repeat(60) })).toBeVisible();
+  await expect(page.getByText('Plug-in hybrid', { exact: false })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator('.dashboard-expand')).toHaveCount(0);
+  await page.screenshot({ path: '/private/tmp/motory-dashboard-long-text.png', fullPage: true });
 });

@@ -67,13 +67,23 @@ These conventions apply to `motory-fe`. They complement `AGENTS.md` and the exis
 
 ## 8. CSS and visual consistency
 
-- Use the project's existing plain CSS approach; do not introduce styling frameworks without approval.
+- Preserve the existing CSS architecture and follow the Tailwind conventions below for new components.
 - Reuse semantic variables from the Motory theme rather than hardcoding existing theme colors or duplicating design tokens.
 - Keep feature- and component-specific styles near the related code where practical.
 - Use descriptive class names and follow the existing lightweight BEM-like pattern (`block__element`, `block--modifier`) where useful.
 - Avoid overly specific selectors and `!important` unless there is a justified need.
 - Build layouts mobile-first and use responsive CSS with Flexbox/Grid as appropriate.
 - Reuse existing brand assets and the established visual identity.
+
+### Styling and Tailwind CSS
+
+- Tailwind CSS 4 is preferred for ordinary layout and responsive styling in new or substantially refactored frontend components. Use utilities for layout, spacing, sizing, typography, and simple borders/backgrounds when they improve readability.
+- Build mobile-first; add responsive variants only when necessary. Preserve existing component breakpoints and prefer native CSS capabilities over JavaScript for responsive behavior.
+- Reuse Motory theme tokens: `motory-primary`, `motory-dark-blue`, `motory-navy`, `motory-slate`, and `motory-light` map to existing CSS color variables (for example, `bg-motory-primary`, `text-motory-navy`, and `border-motory-light`). `font-sans` uses the existing Inter font variable. Do not hardcode brand colors when theme tokens exist.
+- Preserve existing CSS components unless explicitly modifying them. Do not migrate unrelated components opportunistically.
+- Keep complex or specialized styles (such as timeline connectors and decorative effects) in custom CSS. Do not force long utility lists that reduce readability. Avoid duplicate CSS and Tailwind declarations, and remove unused component CSS when safely possible. Preserve the Motory design system and shared styles.
+- Tailwind Preflight is intentionally excluded during this initial integration. Only its theme and utilities are imported in `src/index.css`; existing unlayered CSS retains precedence over layered utilities. Do not add duplicate resets.
+- Avoid new styling libraries unless explicitly approved.
 
 ## 9. Errors and user feedback
 

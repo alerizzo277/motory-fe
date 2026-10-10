@@ -32,7 +32,13 @@ interface MutationCall {
 }
 async function setup(
   page: Page,
-  options: { failure?: string; language?: string; executed?: boolean; delay?: number } = {},
+  options: {
+    failure?: string;
+    language?: string;
+    executed?: boolean;
+    delay?: number;
+    priorReading?: boolean;
+  } = {},
 ) {
   let rows: MaintenanceEvent[] = [
     {
@@ -47,6 +53,24 @@ async function setup(
         : {}),
     },
   ];
+  if (options.priorReading)
+    rows.push(
+      {
+        ...initial,
+        id: 'older-event',
+        name: 'Earlier service',
+        status: 'EXECUTED',
+        executionDate: '2020-01-01T00:00:00.000Z',
+        odometerKm: 1000,
+      },
+      {
+        ...initial,
+        id: 'follow-up',
+        name: 'Next service',
+        scheduledDate: null,
+        scheduledOdometerKm: 1400,
+      },
+    );
   const mutations: MutationCall[] = [];
   const queries: string[] = [];
   let failure = options.failure ?? '';
@@ -103,6 +127,15 @@ async function setup(
       const event = rows.find((row) => row.id === variables.id);
       if (event) data = { maintenanceEvent: serialize(event) };
       else code = 'MAINTENANCE_EVENT_NOT_FOUND';
+    }
+    if (operationName === 'DeleteMaintenanceEvent') {
+      mutations.push({ operationName, input: {} });
+      if (options.delay) await new Promise((resolve) => setTimeout(resolve, options.delay));
+      if (failure) code = failure;
+      else {
+        rows = rows.filter((row) => row.id !== variables.id);
+        data = { deleteMaintenanceEvent: true };
+      }
     }
     if (operationName === 'CreateMaintenanceEvent' || operationName === 'UpdateMaintenanceEvent') {
       const input = variables.input ?? {};
@@ -449,8 +482,8 @@ for (const reschedule of [false, true]) {
     await expect(page.getByRole('heading', { name: 'Ford Fiesta', exact: true })).toBeVisible();
     await expect(page.getByText('1,500 km').first()).toBeVisible();
     expect(queries).toContain('Vehicles');
-    const upcoming = page.getByRole('region', { name: 'Upcoming maintenance' });
-    const recent = page.getByRole('region', { name: 'Recent maintenance' });
+    const upcoming = page.getByRole('region', { name: 'Scheduled maintenance' });
+    const recent = page.getByRole('region', { name: 'Completed maintenance' });
     await expect(recent.getByRole('link', { name: 'View Oil Change' })).toBeVisible();
     await expect(upcoming.getByRole('link')).toHaveCount(reschedule ? 1 : 0);
     if (reschedule) await expect(upcoming.getByText('25,000 km')).toBeVisible();
@@ -483,12 +516,12 @@ test('creates executed and next events together without navigating to next event
   await page.getByRole('link', { name: 'Back to home', exact: true }).click();
   await expect(
     page
-      .getByRole('region', { name: 'Recent maintenance' })
+      .getByRole('region', { name: 'Completed maintenance' })
       .getByRole('link', { name: 'View Oil Change' }),
   ).toBeVisible();
   await expect(
     page
-      .getByRole('region', { name: 'Upcoming maintenance' })
+      .getByRole('region', { name: 'Scheduled maintenance' })
       .getByRole('link', { name: 'View Next tyres' }),
   ).toBeVisible();
 });
@@ -538,7 +571,7 @@ test('saving invalidates cached dashboard and vehicle mileage', async ({ page })
   await page.getByRole('link', { name: 'Back to home', exact: true }).click();
   await expect(page).toHaveURL(/home$/);
   await expect(page.getByText('Mileage unavailable')).toBeVisible();
-  await page.getByRole('link', { name: /View details/ }).click();
+  await page.getByRole('link', { name: /Ford (Fiesta|Focus)/ }).click();
   await expect(page).toHaveURL(/vehicles\//);
   await expect(page.getByRole('button', { name: 'Edit', exact: true })).toBeVisible();
   await expect(page.getByText('Mileage unavailable')).toBeVisible();
@@ -557,7 +590,7 @@ test('saving invalidates cached dashboard and vehicle mileage', async ({ page })
   await expect(page.getByRole('heading', { name: 'Ford Fiesta', exact: true })).toBeVisible();
   await expect(page.getByText('1,500 km').first()).toBeVisible();
   expect(queries.filter((query) => query === 'Vehicles')).toHaveLength(2);
-  await page.getByRole('link', { name: /View details/ }).click();
+  await page.getByRole('link', { name: /Ford (Fiesta|Focus)/ }).click();
   await expect(page.getByRole('button', { name: 'Edit', exact: true })).toBeVisible();
   await expect(page.getByText('1,500 km').first()).toBeVisible();
   expect(queries.filter((query) => query === 'Vehicle')).toHaveLength(2);
@@ -690,4 +723,117 @@ test('dashboard FAB creation and ordinary edits refresh scheduled cards', async 
   await page.getByRole('link', { name: 'Back to home', exact: true }).click();
   await expect(page.getByRole('link', { name: 'View Renamed intervention' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View New intervention' })).toHaveCount(0);
+});
+
+for (const executed of [false, true]) {
+  test(`deletes ${executed ? 'executed' : 'scheduled'} events and refreshes cached dashboard on mobile`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 740 });
+    const state = await setup(page, { executed, delay: 350, priorReading: executed });
+    await page.goto('/home');
+    await expect(page.getByRole('heading', { name: 'Oil Change', exact: true })).toBeVisible();
+    if (executed) {
+      await expect(page.getByRole('link', { name: 'View Next service' })).toContainText(
+        'Mileage threshold reached',
+      );
+      await expect(page.locator('.dashboard-summary')).toContainText('1,500 km');
+    }
+    const queryCount = state.queries.filter((name) => name === 'Vehicles').length;
+    await page.getByRole('link', { name: 'View Oil Change', exact: true }).click();
+    const trigger = page.getByRole('button', { name: 'Delete maintenance event', exact: true });
+    await expect(trigger).toHaveAttribute('title', 'Delete maintenance event');
+    const edit = page.getByRole('button', { name: 'Edit', exact: true });
+    const editBox = await edit.boundingBox();
+    const deleteBox = await trigger.boundingBox();
+    expect(deleteBox?.width).toBeGreaterThanOrEqual(44);
+    expect(deleteBox?.height).toBeGreaterThanOrEqual(44);
+    expect(editBox?.y).toBe(deleteBox?.y);
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    const dialog = page.getByRole('dialog', { name: 'Delete maintenance event?' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText('“Oil Change”');
+    const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true });
+    await expect(cancel).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    await cancel.click();
+    expect(state.mutations).toHaveLength(0);
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+      true,
+    );
+    await page.keyboard.press('Tab');
+    await expect(
+      dialog.getByRole('button', { name: 'Delete maintenance event', exact: true }),
+    ).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(dialog.getByRole('button', { name: 'Deleting…' })).toBeDisabled();
+    await expect(cancel).toBeDisabled();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/home$/);
+    await expect(page.getByRole('heading', { name: 'Oil Change', exact: true })).toHaveCount(0);
+    expect(state.rows()).toHaveLength(executed ? 2 : 0);
+    if (executed) {
+      await expect(page.locator('.dashboard-summary')).toContainText('1,000 km');
+      await expect(page.getByRole('link', { name: 'View Next service' })).toContainText('Due soon');
+      await expect(page.getByRole('link', { name: 'View Earlier service' })).toBeVisible();
+    }
+    expect(
+      state.mutations.filter((call) => call.operationName === 'DeleteMaintenanceEvent'),
+    ).toHaveLength(1);
+    expect(state.queries.filter((name) => name === 'Vehicles').length).toBeGreaterThan(queryCount);
+    expect(
+      state.queries.filter((name) => name === 'MaintenanceEvents').length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+  });
+}
+test('deletion is hidden during creation and editing, and failures stay in the localized dialog', async ({
+  page,
+}) => {
+  const state = await setup(page, { failure: 'INTERNAL_SERVER_ERROR' });
+  await newEvent(page);
+  await expect(
+    page.getByRole('button', { name: 'Delete maintenance event', exact: true }),
+  ).toHaveCount(0);
+  await page.goto('/maintenance-events/event-1');
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Delete maintenance event', exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await page.getByRole('button', { name: 'Delete maintenance event', exact: true }).click();
+  let dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', { name: 'Delete maintenance event', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toHaveText(
+    'We could not delete the maintenance event. Please try again.',
+  );
+  await expect(page).toHaveURL(/maintenance-events\/event-1$/);
+  expect(state.rows()).toHaveLength(1);
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await page.getByLabel('Language').selectOption('it');
+  const trigger = page.getByRole('button', { name: 'Elimina intervento', exact: true });
+  await expect(trigger).toHaveAttribute('title', 'Elimina intervento');
+  await trigger.click();
+  dialog = page.getByRole('dialog', { name: 'Eliminare l’intervento?' });
+  await expect(dialog).toContainText(
+    'Stai per eliminare definitivamente «Oil Change». Questa operazione non può essere annullata.',
+  );
+  await dialog.getByRole('button', { name: 'Elimina intervento', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toHaveText(
+    'Non è stato possibile eliminare l’intervento. Riprova.',
+  );
+  await expect(dialog.getByRole('button', { name: 'Annulla', exact: true })).toBeEnabled();
+  state.setFailure('');
+  await dialog.getByRole('button', { name: 'Elimina intervento', exact: true }).click();
+  await expect(page).toHaveURL(/home$/);
 });

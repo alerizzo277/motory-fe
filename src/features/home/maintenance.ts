@@ -42,6 +42,7 @@ export function upcomingEvents(
   events: MaintenanceEvent[],
   mileage: number | null,
   today = calendarToday(),
+  limit = 5,
 ) {
   return events
     .filter((event) => event.status === 'SCHEDULED')
@@ -52,14 +53,14 @@ export function upcomingEvents(
         (a.scheduledOdometerKm ?? Infinity) - (b.scheduledOdometerKm ?? Infinity) ||
         a.id.localeCompare(b.id),
     )
-    .slice(0, 5);
+    .slice(0, limit);
 }
-export function recentEvents(events: MaintenanceEvent[]) {
+export function recentEvents(events: MaintenanceEvent[], limit = 5) {
   return events
     .filter((event) => event.status === 'EXECUTED')
     .sort(
       (a, b) =>
         (b.executionDate ?? '').localeCompare(a.executionDate ?? '') || a.id.localeCompare(b.id),
     )
-    .slice(0, 5);
+    .slice(0, limit);
 }

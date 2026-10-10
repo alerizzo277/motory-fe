@@ -129,7 +129,7 @@ test('valid verification runs once under StrictMode and enables login', async ({
   await page.getByLabel('Password', { exact: true }).fill('password123');
   await togglePassword(page, 'Password');
   await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Il tuo garage' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Il tuo veicolo' })).toBeVisible();
 });
 
 test('invalid verification provides neutral explanation and resend form', async ({ page }) => {
@@ -192,7 +192,7 @@ test('forgot → neutral response → reset with confirmation → login with new
   await page.getByLabel('Email', { exact: true }).fill(user.email);
   await page.getByLabel('Password', { exact: true }).fill('new-password');
   await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Il tuo garage' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Il tuo veicolo' })).toBeVisible();
 });
 
 test('invalid reset and missing tokens offer recovery without claiming verification', async ({
@@ -391,9 +391,9 @@ test('language selection updates login errors, persists and follows protected na
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await expect(page).toHaveURL(/\/home$/);
   await expect(page.getByRole('banner')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Your garage' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your vehicle' })).toBeVisible();
   await selector.selectOption('it');
-  await expect(page.getByRole('heading', { name: 'Il tuo garage' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Il tuo veicolo' })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', 'it');
   await page.reload();
   await expect(selector).toHaveValue('it');
@@ -474,9 +474,9 @@ for (const width of [320, 375, 428, 768, 1280]) {
     await expect(page.getByRole('combobox')).toHaveValue('it');
     await page.evaluate(() => localStorage.setItem('motory_access_token', 'test-session'));
     await page.goto('/home');
-    await expect(page.getByRole('heading', { name: 'Il tuo garage' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Il tuo veicolo' })).toBeVisible();
     await page.getByRole('combobox').selectOption('en');
-    await expect(page.getByRole('heading', { name: 'Your garage' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Your vehicle' })).toBeVisible();
     await expect(page.getByRole('img', { name: 'Motory' })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,

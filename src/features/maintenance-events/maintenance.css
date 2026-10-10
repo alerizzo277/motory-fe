@@ -237,7 +237,10 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: var(--space-5);
-  max-width: min(440px, calc(100vw - 32px));
+  box-sizing: border-box;
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100svh - 32px);
+  overflow-y: auto;
   background: var(--color-surface);
   color: var(--color-text-primary);
 }
@@ -260,4 +263,22 @@
   .maintenance-facts {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.maintenance-destructive-icon {
+  color: var(--color-error);
+}
+.maintenance-destructive-icon:hover:not(:disabled) {
+  border-color: var(--color-error);
+}
+.maintenance-destructive {
+  background: var(--color-error);
+  color: var(--color-surface);
+}
+.maintenance-destructive:hover:not(:disabled) {
+  background: var(--color-error);
+  filter: brightness(0.9);
+}
+.maintenance-confirm p {
+  overflow-wrap: anywhere;
 }

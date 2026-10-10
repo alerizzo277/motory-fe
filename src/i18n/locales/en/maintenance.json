@@ -81,7 +81,8 @@
     "vehicleUnavailable": "Vehicle not found or unavailable. Open this page with a valid vehicle.",
     "validation": "Check the event and next intervention information and try again.",
     "failed": "We could not load or save the maintenance event. Please try again.",
-    "noCategories": "No categories are available. Please try again later."
+    "noCategories": "No categories are available. Please try again later.",
+    "deleteFailed": "We could not delete the maintenance event. Please try again."
   },
   "addEvent": "Add maintenance event",
   "viewEvent": "View {{name}}",
@@ -93,5 +94,11 @@
     "dueSoon": "Due soon",
     "overdue": "Overdue",
     "mileageReached": "Mileage threshold reached"
-  }
+  },
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "delete": "Delete maintenance event",
+  "deleteTitle": "Delete maintenance event?",
+  "deleteMessage": "You are about to permanently delete “{{eventName}}”. This action cannot be undone.",
+  "deleting": "Deleting…"
 }

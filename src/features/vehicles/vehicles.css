@@ -46,49 +46,6 @@
 .vehicle-add:hover {
   background: var(--color-primary-hover);
 }
-.vehicle-overview {
-  display: block;
-  text-decoration: none;
-  color: var(--color-text-primary);
-  border-top: 4px solid var(--color-primary);
-}
-.vehicle-overview:hover {
-  border-color: var(--color-primary);
-}
-.vehicle-overview__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--color-primary);
-  font-size: 0.875rem;
-}
-.vehicle-symbol {
-  font-size: 1.75rem;
-}
-.vehicle-overview h3 {
-  font-size: 1.75rem;
-  line-height: 1.25;
-  margin: var(--space-4) 0;
-  overflow-wrap: anywhere;
-}
-.vehicle-overview h3 span {
-  font-weight: 400;
-}
-.vehicle-overview p {
-  margin: var(--space-2) 0;
-  color: var(--color-text-secondary);
-}
-.vehicle-overview__mileage {
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-4);
-  margin-top: var(--space-5);
-  display: grid;
-  gap: var(--space-1);
-}
-.vehicle-overview__mileage span {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-}
 .vehicle-empty p {
   color: var(--color-text-secondary);
   margin-top: var(--space-2);
@@ -108,14 +65,10 @@
   gap: var(--space-5);
   min-width: 0;
 }
-.vehicle-form__field,
-.vehicle-selector {
+.vehicle-form__field {
   display: grid;
   gap: var(--space-2);
   min-width: 0;
-}
-.vehicle-selector {
-  margin-bottom: var(--space-4);
 }
 .vehicle-page select {
   width: 100%;
@@ -210,7 +163,6 @@
   .vehicle-panel {
     padding: var(--space-8);
   }
-  .dashboard__maintenance,
   .vehicle-facts,
   .vehicle-form fieldset {
     display: grid;

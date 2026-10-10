@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { validationErrorFields } from '../../../graphql/client/errors';
 import {
   CREATE_MAINTENANCE_EVENT,
+  DELETE_MAINTENANCE_EVENT,
   MAINTENANCE_EVENT,
   UPDATE_MAINTENANCE_EVENT,
 } from '../api/operations';
@@ -62,6 +63,8 @@ export function MaintenanceEventForm({
       ? 'saved'
       : null,
   );
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const deleteDialog = useRef<HTMLDialogElement>(null);
   const pending = useRef(false);
   const allowLeave = useRef(false);
   const dirty =
@@ -210,12 +213,56 @@ export function MaintenanceEventForm({
       setBusy(false);
     }
   }
+  async function deleteEvent() {
+    if (!event || pending.current) return;
+    pending.current = true;
+    setBusy(true);
+    setDeleteError(null);
+    try {
+      const result = await client.mutate({
+        mutation: DELETE_MAINTENANCE_EVENT,
+        variables: { id: event.id },
+      });
+      if (!result.data?.deleteMaintenanceEvent) throw new Error('Missing deletion response');
+      const eventCacheId = client.cache.identify({ __typename: 'MaintenanceEvent', id: event.id });
+      if (eventCacheId) client.cache.evict({ id: eventCacheId });
+      client.cache.evict({
+        id: 'ROOT_QUERY',
+        fieldName: 'maintenanceEvent',
+        args: { id: event.id },
+      });
+      // Remounted dashboard queries fetch the remaining events and database-derived mileage.
+      client.cache.evict({ id: 'ROOT_QUERY', fieldName: 'maintenanceEvents' });
+      client.cache.evict({ id: 'ROOT_QUERY', fieldName: 'vehicles' });
+      client.cache.evict({ id: 'ROOT_QUERY', fieldName: 'vehicle', args: { id: vehicleId } });
+      const vehicleCacheId = client.cache.identify({ __typename: 'Vehicle', id: vehicleId });
+      if (vehicleCacheId) client.cache.evict({ id: vehicleCacheId, fieldName: 'latestOdometerKm' });
+      client.cache.gc();
+      deleteDialog.current?.close();
+      allowLeave.current = true;
+      void navigate('/home');
+    } catch (cause) {
+      const key = maintenanceErrorKey(cause);
+      setDeleteError(key === 'maintenance:errors.failed' ? 'maintenance:errors.deleteFailed' : key);
+    } finally {
+      pending.current = false;
+      setBusy(false);
+    }
+  }
   const hasPlan = draft.scheduledDate || draft.scheduledOdometerKm;
   return (
     <>
       <MaintenanceNavigation
         onEdit={!editing ? () => startEdit() : undefined}
         busy={busy}
+        onDelete={
+          !editing && event
+            ? () => {
+                setDeleteError(null);
+                deleteDialog.current?.showModal();
+              }
+            : undefined
+        }
       />
       <div className="maintenance-heading">
         <p className="maintenance-eyebrow">{t('details')}</p>
@@ -393,6 +440,48 @@ export function MaintenanceEventForm({
             )}
           </>
         )
+      )}
+      {event && !editing && (
+        <dialog
+          ref={deleteDialog}
+          className="maintenance-confirm"
+          aria-labelledby="maintenance-delete-title"
+          aria-describedby="maintenance-delete-message"
+          aria-busy={busy}
+          onCancel={(cancel) => {
+            if (pending.current) cancel.preventDefault();
+          }}
+        >
+          <h2 id="maintenance-delete-title">{t('deleteTitle')}</h2>
+          <p id="maintenance-delete-message">{t('deleteMessage', { eventName: event.name })}</p>
+          {deleteError && (
+            <p
+              className="error"
+              role="alert"
+            >
+              {t(deleteError)}
+            </p>
+          )}
+          <div className="maintenance-actions">
+            <button
+              type="button"
+              autoFocus
+              disabled={busy}
+              className="maintenance-secondary"
+              onClick={() => deleteDialog.current?.close()}
+            >
+              {t('cancel')}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              className="maintenance-destructive"
+              onClick={() => void deleteEvent()}
+            >
+              {t(busy ? 'deleting' : 'delete')}
+            </button>
+          </div>
+        </dialog>
       )}
       {blocker.state === 'blocked' && (
         <dialog

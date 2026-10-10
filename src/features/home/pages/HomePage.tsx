@@ -14,23 +14,67 @@ export function HomePage() {
   const vehicles = data?.vehicles ?? [];
   const selected = vehicles.find((vehicle) => vehicle.id === selectedId) ?? vehicles[0];
   return (
-    <main className="vehicle-page dashboard">
-      <div className="vehicle-page__heading">
-        <h1>{t('homeTitle')}</h1>
-        <Link
-          className="vehicle-add"
-          to="/vehicles/new"
-        >
-          {t('addVehicle')}
-        </Link>
-      </div>
-      <section aria-labelledby="overview-title">
-        <h2
+    <main className="dashboard mx-auto flex w-full max-w-[960px] min-w-0 flex-col gap-6 self-start">
+      <section
+        aria-labelledby="overview-title"
+        className="flex min-w-0 flex-col gap-3"
+      >
+        <h1
           id="overview-title"
-          className="vehicle-eyebrow"
+          className="dashboard-heading"
         >
           {t('overview')}
-        </h2>
+        </h1>
+        <div className="flex min-w-0 items-center gap-3">
+          {!loading && !error && selected && vehicles.length > 1 ? (
+            <>
+              <label
+                className="sr-only"
+                htmlFor="selected-vehicle"
+              >
+                {t('selectVehicle')}
+              </label>
+              <select
+                id="selected-vehicle"
+                className="dashboard-selector min-w-0 flex-1"
+                value={selected.id}
+                onChange={(event) => setSelectedId(event.target.value)}
+              >
+                {vehicles.map((vehicle) => (
+                  <option
+                    key={vehicle.id}
+                    value={vehicle.id}
+                  >
+                    {vehicle.brand} {vehicle.model} · {vehicle.licensePlate}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <span className="min-w-0 flex-1 text-sm text-motory-slate">
+              {!loading && !error && selected ? selected.licensePlate : t('selectVehicle')}
+            </span>
+          )}
+          <Link
+            className="dashboard-add flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-control)]"
+            to="/vehicles/new"
+            title={t('addVehicle')}
+            aria-label={t('addVehicle')}
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </Link>
+        </div>
         {loading ? (
           <p role="status">{t('loading')}</p>
         ) : error ? (
@@ -45,63 +89,41 @@ export function HomePage() {
             </button>
           </div>
         ) : selected ? (
-          <>
-            {vehicles.length > 1 && (
-              <div className="vehicle-selector">
-                <label htmlFor="selected-vehicle">{t('selectVehicle')}</label>
-                <select
-                  id="selected-vehicle"
-                  value={selected.id}
-                  onChange={(event) => setSelectedId(event.target.value)}
-                >
-                  {vehicles.map((vehicle) => (
-                    <option
-                      key={vehicle.id}
-                      value={vehicle.id}
-                    >
-                      {vehicle.brand} {vehicle.model} · {vehicle.licensePlate}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <Link
-              className="vehicle-overview vehicle-panel"
-              to={`/vehicles/${selected.id}`}
-            >
-              <div className="vehicle-overview__top">
-                <span
-                  aria-hidden="true"
-                  className="vehicle-symbol"
-                >
-                  ↗
-                </span>
-                <span>{t('viewDetails')}</span>
-              </div>
-              <h3>
-                {selected.brand} <span>{selected.model}</span>
-              </h3>
-              <p>
-                {selected.year} · {selected.licensePlate}
-              </p>
-              {selected.fuelType && <p>{t(`fuels.${selected.fuelType}`)}</p>}
-              <div className="vehicle-overview__mileage">
-                <span>{t('mileage')}</span>
-                <strong>
-                  {selected.latestOdometerKm === null
-                    ? t('mileageUnavailable')
-                    : t('kilometers', {
-                        value: new Intl.NumberFormat(i18n.resolvedLanguage).format(
-                          selected.latestOdometerKm,
-                        ),
-                      })}
-                </strong>
-              </div>
-            </Link>
-          </>
+          <Link
+            className="dashboard-summary flex min-w-0 flex-col gap-2 rounded-[var(--radius-card)] border border-solid border-motory-light bg-[var(--color-surface)] px-4 py-4 text-motory-navy no-underline hover:border-motory-primary"
+            to={`/vehicles/${selected.id}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="dashboard-summary__title">
+                {selected.brand} {selected.model}
+              </h2>
+              <span
+                aria-hidden="true"
+                className="shrink-0 text-motory-primary"
+              >
+                ↗
+              </span>
+            </div>
+            <p className="text-sm text-motory-slate">
+              {selected.year} · {selected.licensePlate}
+              {selected.fuelType && <> · {t(`fuels.${selected.fuelType}`)}</>}
+            </p>
+            <p className="text-sm text-motory-slate">
+              {t('mileage')}:{' '}
+              <strong className="font-semibold text-motory-navy">
+                {selected.latestOdometerKm === null
+                  ? t('mileageUnavailable')
+                  : t('kilometers', {
+                      value: new Intl.NumberFormat(i18n.resolvedLanguage).format(
+                        selected.latestOdometerKm,
+                      ),
+                    })}
+              </strong>
+            </p>
+          </Link>
         ) : (
           <div className="vehicle-panel vehicle-empty">
-            <h3>{t('noVehicles')}</h3>
+            <h2 className="dashboard-empty-title">{t('noVehicles')}</h2>
             <p>{t('noVehiclesDescription')}</p>
             <Link
               className="vehicle-add"
@@ -141,14 +163,15 @@ export function HomePage() {
       ) : (
         !loading &&
         !error && (
-          <div className="dashboard__maintenance">
+          <div className="dashboard__maintenance flex flex-col gap-8">
             {(['upcoming', 'recent'] as const).map((section) => (
               <section
                 key={section}
                 aria-labelledby={`${section}-title`}
+                className="flex flex-col gap-3"
               >
                 <h2
-                  className="vehicle-eyebrow"
+                  className="dashboard-heading"
                   id={`${section}-title`}
                 >
                   {t(section)}

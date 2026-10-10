@@ -183,7 +183,7 @@ test('multiple selection, absent mileage, card navigation and language switching
   await expect(page.getByText('12,500 km')).toBeVisible();
   await page.getByLabel('Choose vehicle').selectOption('vehicle-2');
   await expect(page.getByText('Mileage unavailable')).toBeVisible();
-  await page.getByRole('link', { name: /View details/ }).click();
+  await page.getByRole('link', { name: /Ford (Fiesta|Focus)/ }).click();
   await expect(page).toHaveURL(/vehicles\/vehicle-2$/);
   await expect(page.getByRole('heading', { name: 'Ford Focus' })).toBeVisible();
   await page.getByLabel('Language').selectOption('it');
@@ -283,7 +283,7 @@ test('loading and network failure provide localized recovery', async ({ page }) 
 test('one vehicle needs no selector and vehicle routes require a session', async ({ page }) => {
   await setup(page);
   await page.goto('/home');
-  await expect(page.getByRole('link', { name: /View details/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Ford (Fiesta|Focus)/ })).toBeVisible();
   await expect(page.getByLabel('Choose vehicle')).toHaveCount(0);
   await page.addInitScript(() => localStorage.removeItem('motory_access_token'));
   for (const path of ['/vehicles/new', '/vehicles/vehicle-1']) {
@@ -328,7 +328,7 @@ for (const width of [320, 375, 428, 768, 1280]) {
       true,
     );
     await page.screenshot({ path: `/tmp/motory-home-${width}.png`, fullPage: true });
-    await page.getByRole('link', { name: /View details/ }).click();
+    await page.getByRole('link', { name: /Ford (Fiesta|Focus)/ }).click();
     const back = page.getByRole('link', { name: 'Back to home', exact: true });
     const edit = page.getByRole('button', { name: 'Edit', exact: true });
     await expect(back).toBeVisible();

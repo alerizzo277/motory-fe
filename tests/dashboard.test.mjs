@@ -113,3 +113,24 @@ test('calendar comparisons do not shift at daylight-saving boundaries', () => {
   const local = new Date(2026, 9, 10, 0, 1);
   assert.equal(calendarToday(local), today);
 });
+
+test('expanded lists preserve urgency and chronological ordering beyond the initial five', () => {
+  const scheduled = Array.from({ length: 7 }, (_, i) =>
+    event({ id: String(i), scheduledDate: `2026-10-${String(i + 10).padStart(2, '0')}` }),
+  );
+  const allScheduled = upcomingEvents(scheduled, null, today, Infinity);
+  assert.equal(allScheduled.length, 7);
+  assert.deepEqual(allScheduled.slice(0, 5), upcomingEvents(scheduled, null, today));
+  const executed = scheduled.map((row) => ({
+    ...row,
+    status: 'EXECUTED',
+    executionDate: row.scheduledDate,
+  }));
+  const allExecuted = recentEvents(executed, Infinity);
+  assert.equal(allExecuted.length, 7);
+  assert.deepEqual(allExecuted.slice(0, 5), recentEvents(executed));
+  assert.deepEqual(
+    allExecuted.map((row) => row.id),
+    ['6', '5', '4', '3', '2', '1', '0'],
+  );
+});

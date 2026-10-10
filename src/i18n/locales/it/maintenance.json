@@ -81,7 +81,8 @@
     "vehicleUnavailable": "Veicolo non trovato o non disponibile. Apri questa pagina con un veicolo valido.",
     "validation": "Controlla i dati dell’intervento e del prossimo intervento e riprova.",
     "failed": "Non è stato possibile caricare o salvare l’intervento. Riprova.",
-    "noCategories": "Nessuna categoria disponibile. Riprova più tardi."
+    "noCategories": "Nessuna categoria disponibile. Riprova più tardi.",
+    "deleteFailed": "Non è stato possibile eliminare l’intervento. Riprova."
   },
   "addEvent": "Aggiungi intervento",
   "viewEvent": "Visualizza {{name}}",
@@ -93,5 +94,11 @@
     "dueSoon": "In scadenza",
     "overdue": "Scaduto",
     "mileageReached": "Soglia km raggiunta"
-  }
+  },
+  "showMore": "Mostra di più",
+  "showLess": "Mostra meno",
+  "delete": "Elimina intervento",
+  "deleteTitle": "Eliminare l’intervento?",
+  "deleteMessage": "Stai per eliminare definitivamente «{{eventName}}». Questa operazione non può essere annullata.",
+  "deleting": "Eliminazione…"
 }

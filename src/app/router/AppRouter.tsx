@@ -1,3 +1,7 @@
+import { AdminLayout } from '../../features/admin/components/AdminLayout';
+import { AdminOverviewPage } from '../../features/admin/pages/AdminOverviewPage';
+import { AdminUsersPage } from '../../features/admin/pages/AdminUsersPage';
+import { AdminUserPage } from '../../features/admin/pages/AdminUserPage';
 import { MaintenanceEventPage } from '../../features/maintenance-events/pages/MaintenanceEventPage';
 import { AppProviders } from '../providers/AppProviders';
 import { useTranslation } from 'react-i18next';
@@ -58,6 +62,8 @@ function AppLayout() {
       <AppToolbar
         showUser={
           pathname === '/home' ||
+          pathname === '/admin' ||
+          pathname.startsWith('/admin/') ||
           pathname === '/settings' ||
           pathname.startsWith('/settings/') ||
           pathname.startsWith('/vehicles/') ||
@@ -111,6 +117,23 @@ const router = createBrowserRouter(
         element={<ResetPasswordPage />}
       />
       <Route element={<AuthRoute protectedRoute />}>
+        <Route
+          path="/admin"
+          element={<AdminLayout />}
+        >
+          <Route
+            index
+            element={<AdminOverviewPage />}
+          />
+          <Route
+            path="users"
+            element={<AdminUsersPage />}
+          />
+          <Route
+            path="users/:id"
+            element={<AdminUserPage />}
+          />
+        </Route>
         <Route
           path="/settings/security"
           element={<SecurityPage />}

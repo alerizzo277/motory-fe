@@ -1,3 +1,5 @@
+import { hasAdminRole } from '../../features/auth/roles';
+import { AdminIcon } from '../../features/admin/components/AdminIcon';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../features/auth/hooks/useAuth';
@@ -103,6 +105,16 @@ export function AppToolbar({ showUser = false }: { showUser?: boolean }) {
                 >
                   {t('settings:title')}
                 </Link>
+                {hasAdminRole(user) && (
+                  <Link
+                    to="/admin"
+                    className="app-toolbar__settings"
+                    onClick={() => setOpen(false)}
+                  >
+                    <AdminIcon kind="overview" />
+                    {t('admin:title')}
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     setOpen(false);

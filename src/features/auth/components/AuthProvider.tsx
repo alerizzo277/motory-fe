@@ -1,3 +1,4 @@
+import { AppToolbar } from '../../../shared/components/AppToolbar';
 import { useTranslation } from 'react-i18next';
 import { useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
@@ -51,28 +52,33 @@ function AuthSession({ children, token }: { children: ReactNode; token: string |
       value={{ user, isAuthenticated: !!user, isLoading: !!token && loading, login, logout }}
     >
       {token && error ? (
-        <main
-          className="card"
-          role="alert"
-        >
-          <h1>{t('auth:session.connectionFailed')}</h1>
-          <p>{t('auth:session.failed')}</p>
-          <button
-            onClick={() => {
-              void refetch().catch(() => undefined);
-            }}
-          >
-            {t('common:actions.retry')}
-          </button>
-          <button
-            className="secondary"
-            onClick={() => {
-              void logout();
-            }}
-          >
-            {t('auth:actions.backToLogin')}
-          </button>
-        </main>
+        <>
+          <AppToolbar />
+          <div className="app-content">
+            <main
+              className="card"
+              role="alert"
+            >
+              <h1>{t('auth:session.connectionFailed')}</h1>
+              <p>{t('auth:session.failed')}</p>
+              <button
+                onClick={() => {
+                  void refetch().catch(() => undefined);
+                }}
+              >
+                {t('common:actions.retry')}
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  void logout();
+                }}
+              >
+                {t('auth:actions.backToLogin')}
+              </button>
+            </main>
+          </div>
+        </>
       ) : (
         children
       )}

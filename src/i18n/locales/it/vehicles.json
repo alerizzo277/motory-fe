@@ -1,0 +1,61 @@
+{
+  "homeTitle": "Il tuo garage",
+  "overview": "Il tuo veicolo",
+  "addVehicle": "Aggiungi veicolo",
+  "selectVehicle": "Scegli veicolo",
+  "viewDetails": "Visualizza dettagli",
+  "noVehicles": "La storia della tua auto inizia qui",
+  "noVehiclesDescription": "Non hai ancora registrato veicoli. Aggiungi il tuo veicolo per conservare le sue informazioni in un unico posto.",
+  "upcoming": "Prossime manutenzioni",
+  "recent": "Manutenzioni recenti",
+  "upcomingEmpty": "Al momento non sono mostrate manutenzioni in programma per questo veicolo.",
+  "recentEmpty": "Al momento non sono mostrate manutenzioni recenti per questo veicolo.",
+  "maintenanceWithoutVehicle": "Le informazioni sulla manutenzione saranno disponibili dopo aver aggiunto un veicolo.",
+  "details": "Informazioni del veicolo",
+  "createTitle": "Aggiungi il tuo veicolo",
+  "edit": "Modifica",
+  "saveVehicle": "Salva veicolo",
+  "saveChanges": "Salva modifiche",
+  "cancel": "Annulla",
+  "saving": "Salvataggio…",
+  "saved": "Veicolo salvato.",
+  "backHome": "Torna alla home",
+  "loading": "Caricamento veicoli…",
+  "retry": "Riprova",
+  "optional": "facoltativo",
+  "unspecified": "Non specificato",
+  "mileage": "Ultimo chilometraggio noto",
+  "mileageUnavailable": "Chilometraggio non disponibile",
+  "kilometers": "{{value}} km",
+  "unsavedTitle": "Scartare le modifiche non salvate?",
+  "unsavedDescription": "Le tue modifiche non sono state salvate.",
+  "keepEditing": "Continua a modificare",
+  "discard": "Scarta modifiche",
+  "fields": {
+    "brand": "Marca",
+    "model": "Modello",
+    "year": "Anno di immatricolazione",
+    "licensePlate": "Targa",
+    "fuelType": "Alimentazione"
+  },
+  "fuels": {
+    "PETROL": "Benzina",
+    "DIESEL": "Diesel",
+    "ELECTRIC": "Elettrica",
+    "MILD_HYBRID": "Mild hybrid",
+    "FULL_HYBRID": "Full hybrid",
+    "PLUG_IN_HYBRID": "Ibrida plug-in",
+    "LPG": "GPL",
+    "OTHER": "Altro"
+  },
+  "validation": {
+    "required": "Questo campo è obbligatorio.",
+    "year": "Inserisci un anno intero dal 1886 all’anno corrente.",
+    "invalid": "Controlla questo campo e riprova."
+  },
+  "errors": {
+    "notFound": "Veicolo non trovato o non disponibile.",
+    "validation": "Controlla le informazioni del veicolo e riprova.",
+    "failed": "Non è stato possibile caricare o salvare il veicolo. Riprova."
+  }
+}

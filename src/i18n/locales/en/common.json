@@ -34,6 +34,7 @@
   "toolbar": {
     "language": "Language",
     "italian": "Italiano",
-    "english": "English"
+    "english": "English",
+    "userMenu": "User menu"
   }
 }

@@ -1,0 +1,61 @@
+{
+  "homeTitle": "Your garage",
+  "overview": "Your vehicle",
+  "addVehicle": "Add vehicle",
+  "selectVehicle": "Choose vehicle",
+  "viewDetails": "View details",
+  "noVehicles": "Your car’s story starts here",
+  "noVehiclesDescription": "No vehicles registered yet. Add your vehicle to keep its information in one place.",
+  "upcoming": "Upcoming maintenance",
+  "recent": "Recent maintenance",
+  "upcomingEmpty": "No upcoming maintenance is currently shown for this vehicle.",
+  "recentEmpty": "No recent maintenance is currently shown for this vehicle.",
+  "maintenanceWithoutVehicle": "Maintenance information will be available after you add a vehicle.",
+  "details": "Vehicle information",
+  "createTitle": "Add your vehicle",
+  "edit": "Edit",
+  "saveVehicle": "Save vehicle",
+  "saveChanges": "Save changes",
+  "cancel": "Cancel",
+  "saving": "Saving…",
+  "saved": "Vehicle saved.",
+  "backHome": "Back to home",
+  "loading": "Loading vehicles…",
+  "retry": "Try again",
+  "optional": "optional",
+  "unspecified": "Not specified",
+  "mileage": "Latest known mileage",
+  "mileageUnavailable": "Mileage unavailable",
+  "kilometers": "{{value}} km",
+  "unsavedTitle": "Discard unsaved changes?",
+  "unsavedDescription": "Your changes have not been saved.",
+  "keepEditing": "Keep editing",
+  "discard": "Discard changes",
+  "fields": {
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Registration year",
+    "licensePlate": "License plate",
+    "fuelType": "Fuel type"
+  },
+  "fuels": {
+    "PETROL": "Petrol",
+    "DIESEL": "Diesel",
+    "ELECTRIC": "Electric",
+    "MILD_HYBRID": "Mild hybrid",
+    "FULL_HYBRID": "Full hybrid",
+    "PLUG_IN_HYBRID": "Plug-in hybrid",
+    "LPG": "LPG",
+    "OTHER": "Other"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "year": "Enter an integer year from 1886 through the current year.",
+    "invalid": "Check this field and try again."
+  },
+  "errors": {
+    "notFound": "Vehicle not found or unavailable.",
+    "validation": "Check the vehicle information and try again.",
+    "failed": "We could not load or save your vehicle. Please try again."
+  }
+}

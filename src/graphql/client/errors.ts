@@ -8,6 +8,7 @@ export type GraphQLErrorCode =
   | 'UNAUTHENTICATED'
   | 'EMAIL_ALREADY_EXISTS'
   | 'VALIDATION_ERROR'
+  | 'VEHICLE_NOT_FOUND'
   | 'USER_NOT_FOUND'
   | 'FORBIDDEN';
 export function hasErrorCode(error: unknown, code: GraphQLErrorCode): boolean {

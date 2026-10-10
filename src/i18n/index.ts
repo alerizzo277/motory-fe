@@ -1,3 +1,5 @@
+import itVehicles from './locales/it/vehicles.json';
+import enVehicles from './locales/en/vehicles.json';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { persistLanguage, resolveLanguage } from './language';
@@ -16,8 +18,8 @@ function updateDocumentLanguage(language: string) {
 i18n.on('languageChanged', updateDocumentLanguage);
 void i18n.use(initReactI18next).init({
   resources: {
-    it: { common: itCommon, auth: itAuth, validation: itValidation },
-    en: { common: enCommon, auth: enAuth, validation: enValidation },
+    it: { vehicles: itVehicles, common: itCommon, auth: itAuth, validation: itValidation },
+    en: { vehicles: enVehicles, common: enCommon, auth: enAuth, validation: enValidation },
   },
   lng: resolveLanguage(),
   fallbackLng: 'it',

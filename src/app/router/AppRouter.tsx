@@ -1,3 +1,4 @@
+import { MaintenanceEventPage } from '../../features/maintenance-events/pages/MaintenanceEventPage';
 import { AppProviders } from '../providers/AppProviders';
 import { useTranslation } from 'react-i18next';
 import { VerifyEmailPage } from '../../features/auth/pages/VerifyEmailPage';
@@ -50,7 +51,13 @@ function AppLayout() {
   const { pathname } = useLocation();
   return (
     <>
-      <AppToolbar showUser={pathname === '/home' || pathname.startsWith('/vehicles/')} />
+      <AppToolbar
+        showUser={
+          pathname === '/home' ||
+          pathname.startsWith('/vehicles/') ||
+          pathname.startsWith('/maintenance-events/')
+        }
+      />
       <div className="app-content">
         <Outlet />
       </div>
@@ -98,6 +105,14 @@ const router = createBrowserRouter(
         element={<ResetPasswordPage />}
       />
       <Route element={<AuthRoute protectedRoute />}>
+        <Route
+          path="/maintenance-events/new"
+          element={<MaintenanceEventPage />}
+        />
+        <Route
+          path="/maintenance-events/:id"
+          element={<MaintenanceEventPage />}
+        />
         <Route
           path="/vehicles/new"
           element={<VehiclePage />}

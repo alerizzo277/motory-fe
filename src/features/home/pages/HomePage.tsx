@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { VEHICLES } from '../../vehicles/api/operations';
 import { vehicleErrorKey } from '../../vehicles/api/errors';
 import '../../vehicles/vehicles.css';
+import '../dashboard.css';
+import { DashboardMaintenance } from '../components/DashboardMaintenance';
 export function HomePage() {
   const { t, i18n } = useTranslation('vehicles');
   const { data, loading, error, refetch } = useQuery(VEHICLES);
@@ -110,30 +112,55 @@ export function HomePage() {
           </div>
         )}
       </section>
-      <div className="dashboard__maintenance">
-        {(['upcoming', 'recent'] as const).map((section) => (
-          <section
-            key={section}
-            aria-labelledby={`${section}-title`}
+      {!loading && !error && selected ? (
+        <>
+          <DashboardMaintenance
+            key={selected.id}
+            vehicle={selected}
+          />
+          <Link
+            className="maintenance-fab"
+            to={`/maintenance-events/new?vehicleId=${encodeURIComponent(selected.id)}`}
+            title={t('maintenance:addEvent')}
+            aria-label={t('maintenance:addEvent')}
           >
-            <h2
-              className="vehicle-eyebrow"
-              id={`${section}-title`}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
             >
-              {t(section)}
-            </h2>
-            <div className="vehicle-panel vehicle-empty">
-              <span
-                className="vehicle-empty__mark"
-                aria-hidden="true"
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </Link>
+        </>
+      ) : (
+        !loading &&
+        !error && (
+          <div className="dashboard__maintenance">
+            {(['upcoming', 'recent'] as const).map((section) => (
+              <section
+                key={section}
+                aria-labelledby={`${section}-title`}
               >
-                —
-              </span>
-              <p>{t(selected ? `${section}Empty` : 'maintenanceWithoutVehicle')}</p>
-            </div>
-          </section>
-        ))}
-      </div>
+                <h2
+                  className="vehicle-eyebrow"
+                  id={`${section}-title`}
+                >
+                  {t(section)}
+                </h2>
+                <div className="vehicle-panel vehicle-empty">
+                  <p>{t('maintenanceWithoutVehicle')}</p>
+                </div>
+              </section>
+            ))}
+          </div>
+        )
+      )}
     </main>
   );
 }

@@ -38,6 +38,8 @@ async function setup(page: Page, count = 1, failure = '') {
           role: 'USER',
         },
       };
+    if (operationName === 'Categories') data = { categories: [] };
+    if (operationName === 'MaintenanceEvents') data = { maintenanceEvents: [] };
     if (operationName === 'Vehicles') data = { vehicles };
     if (operationName === 'Vehicle') {
       const vehicle = vehicles.find((v) => v.id === variables.id);

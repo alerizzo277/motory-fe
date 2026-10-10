@@ -80,7 +80,7 @@ function keys(object, prefix = '') {
     .sort();
 }
 test('Italian and English namespaces have synchronized nonempty keys and interpolation', () => {
-  for (const namespace of ['common', 'auth', 'validation', 'vehicles']) {
+  for (const namespace of ['common', 'auth', 'validation', 'vehicles', 'maintenance']) {
     const load = (language) =>
       JSON.parse(
         readFileSync(

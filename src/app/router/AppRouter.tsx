@@ -19,6 +19,9 @@ import { useAuth } from '../../features/auth/hooks/useAuth';
 import { RegisterPage } from '../../features/auth/pages/RegisterPage';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
 import { HomePage } from '../../features/home/pages/HomePage';
+import { SettingsPage } from '../../features/settings/pages/SettingsPage';
+import { ProfilePage } from '../../features/settings/pages/ProfilePage';
+import { DeletedVehiclesPage } from '../../features/settings/pages/DeletedVehiclesPage';
 function AuthRoute({ protectedRoute }: { protectedRoute: boolean }) {
   const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuth();
@@ -54,6 +57,8 @@ function AppLayout() {
       <AppToolbar
         showUser={
           pathname === '/home' ||
+          pathname === '/settings' ||
+          pathname.startsWith('/settings/') ||
           pathname.startsWith('/vehicles/') ||
           pathname.startsWith('/maintenance-events/')
         }
@@ -105,6 +110,18 @@ const router = createBrowserRouter(
         element={<ResetPasswordPage />}
       />
       <Route element={<AuthRoute protectedRoute />}>
+        <Route
+          path="/settings"
+          element={<SettingsPage />}
+        />
+        <Route
+          path="/settings/profile"
+          element={<ProfilePage />}
+        />
+        <Route
+          path="/settings/deleted-vehicles"
+          element={<DeletedVehiclesPage />}
+        />
         <Route
           path="/maintenance-events/new"
           element={<MaintenanceEventPage />}

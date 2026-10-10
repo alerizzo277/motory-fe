@@ -1,0 +1,51 @@
+.settings-page {
+  overflow-wrap: anywhere;
+}
+.settings-title,
+.settings-section-title,
+.settings-text,
+.settings-facts {
+  margin: 0;
+}
+.settings-label {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+.settings-facts dd {
+  margin: var(--space-1) 0 0;
+  font-weight: 600;
+}
+.settings-entry {
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+.settings-entry:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background);
+}
+.settings-admin {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+.settings-actions button {
+  margin: 0;
+  flex: 1;
+}
+.settings-page [aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+.settings-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100svh - 32px);
+  overflow-y: auto;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+.settings-success {
+  border-left: 3px solid var(--color-primary);
+  padding-inline: var(--space-3);
+}

@@ -96,6 +96,13 @@ export function AppToolbar({ showUser = false }: { showUser?: boolean }) {
                   {user.firstName} {user.lastName}
                 </strong>
                 <p>{user.email}</p>
+                <Link
+                  to="/settings"
+                  className="app-toolbar__settings"
+                  onClick={() => setOpen(false)}
+                >
+                  {t('settings:title')}
+                </Link>
                 <button
                   onClick={() => {
                     setOpen(false);

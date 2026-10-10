@@ -1,5 +1,7 @@
 import itMaintenance from './locales/it/maintenance.json';
 import enMaintenance from './locales/en/maintenance.json';
+import itSettings from './locales/it/settings.json';
+import enSettings from './locales/en/settings.json';
 import itVehicles from './locales/it/vehicles.json';
 import enVehicles from './locales/en/vehicles.json';
 import i18n from 'i18next';
@@ -21,6 +23,7 @@ i18n.on('languageChanged', updateDocumentLanguage);
 void i18n.use(initReactI18next).init({
   resources: {
     it: {
+      settings: itSettings,
       maintenance: itMaintenance,
       vehicles: itVehicles,
       common: itCommon,
@@ -28,6 +31,7 @@ void i18n.use(initReactI18next).init({
       validation: itValidation,
     },
     en: {
+      settings: enSettings,
       maintenance: enMaintenance,
       vehicles: enVehicles,
       common: enCommon,

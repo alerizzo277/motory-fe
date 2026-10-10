@@ -1,3 +1,5 @@
+import { ResourceUnavailable } from '../../../shared/components/ResourceUnavailable';
+import '../../vehicles/vehicles.css';
 import { hasErrorCode } from '../../../graphql/client/errors';
 import { useQuery } from '@apollo/client/react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -13,7 +15,11 @@ export function MaintenanceEventPage() {
   const [params] = useSearchParams();
   const vehicleId = params.get('vehicleId') ?? '';
   const { t } = useTranslation('maintenance');
-  const eventQuery = useQuery(MAINTENANCE_EVENT, { variables: { id: id ?? '' }, skip: !id });
+  const eventQuery = useQuery(MAINTENANCE_EVENT, {
+    variables: { id: id ?? '' },
+    skip: !id,
+    fetchPolicy: 'network-only',
+  });
   const vehicleQuery = useQuery(VEHICLE, {
     variables: { id: vehicleId },
     skip: !!id || !vehicleId,
@@ -38,6 +44,17 @@ export function MaintenanceEventPage() {
   const owningVehicleId = id ? event?.vehicleId : vehicle?.id;
   const ready = !!owningVehicleId;
   const categories = categoryQuery.data?.categories ?? [];
+  if (
+    hasErrorCode(eventQuery.error, 'MAINTENANCE_EVENT_NOT_FOUND') ||
+    hasErrorCode(eventQuery.error, 'VEHICLE_NOT_FOUND') ||
+    hasErrorCode(vehicleQuery.error, 'VEHICLE_NOT_FOUND')
+  ) {
+    return (
+      <main className="maintenance-page">
+        <ResourceUnavailable />
+      </main>
+    );
+  }
   return (
     <main className="maintenance-page">
       {error || loading || !ready || !categories.length ? (

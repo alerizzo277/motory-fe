@@ -241,9 +241,9 @@ test('protected create/detail routes and unavailable vehicle/event states', asyn
   await page.goto('/maintenance-events/new');
   await expect(page.getByRole('alert')).toContainText('Vehicle not found or unavailable');
   await page.goto('/maintenance-events/new?vehicleId=missing');
-  await expect(page.getByRole('alert')).toContainText('Vehicle not found or unavailable');
+  await expect(page.getByRole('alert')).toHaveText('This resource is unavailable.');
   await page.goto('/maintenance-events/missing');
-  await expect(page.getByRole('alert')).toHaveText('Maintenance event not found or unavailable.');
+  await expect(page.getByRole('alert')).toHaveText('This resource is unavailable.');
   await page.addInitScript(() => localStorage.removeItem('motory_access_token'));
   for (const path of [
     `/maintenance-events/new?vehicleId=${vehicleId}`,

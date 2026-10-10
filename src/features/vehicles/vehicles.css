@@ -170,3 +170,31 @@
     gap: var(--space-6);
   }
 }
+
+.vehicle-destructive-icon {
+  color: var(--color-error);
+}
+.vehicle-destructive-icon:hover:not(:disabled) {
+  border-color: var(--color-error);
+}
+.vehicle-destructive {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+}
+.vehicle-destructive:hover:not(:disabled) {
+  background: var(--color-error);
+  filter: brightness(0.9);
+}
+.vehicle-delete-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100svh - 32px);
+  overflow-y: auto;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+.vehicle-delete-dialog h2 {
+  margin-top: 0;
+}
+.vehicle-delete-dialog .vehicle-actions button {
+  margin-top: 0;
+}

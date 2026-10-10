@@ -56,6 +56,17 @@
   "errors": {
     "notFound": "Vehicle not found or unavailable.",
     "validation": "Check the vehicle information and try again.",
-    "failed": "We could not load or save your vehicle. Please try again."
-  }
+    "failed": "We could not load or save your vehicle. Please try again.",
+    "retentionFailed": "We could not load the retention information. Please try again.",
+    "deleteFailed": "We could not delete your vehicle. Please try again."
+  },
+  "delete": "Delete vehicle",
+  "deleteVehicleMessage": "You are about to remove {{brand}} {{model}} ({{licensePlate}}) from your garage.",
+  "deleteHistoryMessage": "The vehicle and all associated maintenance events will no longer be accessible in the application.",
+  "deleteRetention": "The data is temporarily retained for an intended period of {{retentionDays}} days.",
+  "deleteKeyword": "DELETE",
+  "deleteInstructions": "To confirm, type {{keyword}} exactly as shown.",
+  "deleteConfirmationLabel": "Confirmation keyword",
+  "deleting": "Deleting…",
+  "retentionLoading": "Loading retention information…"
 }

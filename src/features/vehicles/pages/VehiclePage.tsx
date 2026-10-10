@@ -1,3 +1,5 @@
+import { ResourceUnavailable } from '../../../shared/components/ResourceUnavailable';
+import { hasErrorCode } from '../../../graphql/client/errors';
 import { VehicleNavigation } from '../components/VehicleNavigation';
 import { useQuery } from '@apollo/client/react';
 import { useParams } from 'react-router-dom';
@@ -12,7 +14,15 @@ export function VehiclePage() {
   const { data, loading, error, refetch } = useQuery(VEHICLE, {
     variables: { id: id ?? '' },
     skip: !id,
+    fetchPolicy: 'network-only',
   });
+  if (hasErrorCode(error, 'VEHICLE_NOT_FOUND')) {
+    return (
+      <main className="vehicle-page vehicle-panel">
+        <ResourceUnavailable />
+      </main>
+    );
+  }
   return (
     <main className="vehicle-page vehicle-panel">
       {(loading || error) && <VehicleNavigation />}

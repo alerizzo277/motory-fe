@@ -50,3 +50,16 @@ export const UPDATE_VEHICLE: TypedDocumentNode<
   }
   ${FIELDS}
 `;
+
+export const DELETE_VEHICLE: TypedDocumentNode<{ deleteVehicle: boolean }, { id: string }> = gql`
+  mutation DeleteVehicle($id: ID!) {
+    deleteVehicle(id: $id)
+  }
+`;
+export const VEHICLE_DELETION_RETENTION_DAYS: TypedDocumentNode<{
+  vehicleDeletionRetentionDays: number;
+}> = gql`
+  query VehicleDeletionRetentionDays {
+    vehicleDeletionRetentionDays
+  }
+`;

@@ -56,6 +56,17 @@
   "errors": {
     "notFound": "Veicolo non trovato o non disponibile.",
     "validation": "Controlla le informazioni del veicolo e riprova.",
-    "failed": "Non è stato possibile caricare o salvare il veicolo. Riprova."
-  }
+    "failed": "Non è stato possibile caricare o salvare il veicolo. Riprova.",
+    "retentionFailed": "Non è stato possibile caricare le informazioni di conservazione. Riprova.",
+    "deleteFailed": "Non è stato possibile eliminare il veicolo. Riprova."
+  },
+  "delete": "Elimina veicolo",
+  "deleteVehicleMessage": "Stai per rimuovere il veicolo {{brand}} {{model}} ({{licensePlate}}) dal tuo garage.",
+  "deleteHistoryMessage": "Il veicolo e tutti gli interventi associati non saranno più accessibili dall’applicazione.",
+  "deleteRetention": "I dati saranno conservati temporaneamente per un periodo previsto di {{retentionDays}} giorni.",
+  "deleteKeyword": "ELIMINA",
+  "deleteInstructions": "Per confermare, digita {{keyword}} esattamente come indicato.",
+  "deleteConfirmationLabel": "Parola di conferma",
+  "deleting": "Eliminazione…",
+  "retentionLoading": "Caricamento delle informazioni di conservazione…"
 }

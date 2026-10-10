@@ -1,7 +1,8 @@
 {
   "errors": {
     "generic": "Something went wrong. Please try again.",
-    "operationFailed": "Unable to complete the operation. Please try again shortly."
+    "operationFailed": "Unable to complete the operation. Please try again shortly.",
+    "resourceUnavailable": "This resource is unavailable."
   },
   "fields": {
     "firstName": "First name",
@@ -16,7 +17,8 @@
     "retry": "Try again",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "backHome": "Back to home"
   },
   "home": {
     "title": "Home page",
@@ -37,5 +39,6 @@
     "english": "English",
     "userMenu": "User menu",
     "home": "Motory — Back to home"
-  }
+  },
+  "resourceUnavailableTitle": "Resource unavailable"
 }

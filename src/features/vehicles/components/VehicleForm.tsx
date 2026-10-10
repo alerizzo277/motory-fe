@@ -1,3 +1,4 @@
+import { VehicleDeletionDialog } from './VehicleDeletionDialog';
 import { VehicleNavigation } from './VehicleNavigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -15,6 +16,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   const { t, i18n } = useTranslation('vehicles');
   const client = useApolloClient();
   const navigate = useNavigate();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [editing, setEditing] = useState(!vehicle);
   const [draft, setDraft] = useState(() => vehicleDraft(vehicle));
   const [errors, setErrors] = useState<VehicleErrors>({});
@@ -91,6 +93,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   return (
     <>
       <VehicleNavigation
+        onDelete={!editing && vehicle ? () => setDeleteOpen(true) : undefined}
         onEdit={
           !editing
             ? () => {
@@ -233,6 +236,13 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
             </div>
           </dl>
         )
+      )}
+      {deleteOpen && vehicle && !editing && (
+        <VehicleDeletionDialog
+          key={vehicle.id}
+          vehicle={vehicle}
+          onClose={() => setDeleteOpen(false)}
+        />
       )}
       {blocker.state === 'blocked' && (
         <dialog

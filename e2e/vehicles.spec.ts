@@ -246,9 +246,7 @@ for (const code of ['VALIDATION_ERROR', 'INTERNAL_SERVER_ERROR']) {
 test('unknown vehicle and unauthorized responses are controlled', async ({ page }) => {
   await setup(page);
   await page.goto('/vehicles/missing');
-  await expect(
-    page.getByRole('heading', { name: 'Vehicle not found or unavailable.' }),
-  ).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveText('This resource is unavailable.');
   await page.route('**/graphql', (route) =>
     route.fulfill({
       json: { errors: [{ message: 'private', extensions: { code: 'UNAUTHENTICATED' } }] },

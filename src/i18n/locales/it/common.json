@@ -1,7 +1,8 @@
 {
   "errors": {
     "generic": "Si è verificato un errore. Riprova.",
-    "operationFailed": "Operazione non riuscita. Riprova tra poco."
+    "operationFailed": "Operazione non riuscita. Riprova tra poco.",
+    "resourceUnavailable": "Questa risorsa non è disponibile."
   },
   "fields": {
     "firstName": "Nome",
@@ -16,7 +17,8 @@
     "retry": "Riprova",
     "showPassword": "Mostra password",
     "hidePassword": "Nascondi password",
-    "logout": "Logout"
+    "logout": "Logout",
+    "backHome": "Torna alla home"
   },
   "home": {
     "title": "Home page",
@@ -37,5 +39,6 @@
     "english": "English",
     "userMenu": "Menu utente",
     "home": "Motory — Torna alla home"
-  }
+  },
+  "resourceUnavailableTitle": "Risorsa non disponibile"
 }

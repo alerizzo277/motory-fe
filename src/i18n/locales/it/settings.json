@@ -31,5 +31,34 @@
     "vehiclesFailed": "Non è stato possibile caricare i veicoli eliminati. Riprova.",
     "restoreFailed": "Non è stato possibile ripristinare il veicolo. Riprova.",
     "restoreUnavailable": "Questo veicolo non è disponibile per il recupero. Il periodo previsto potrebbe essere scaduto."
+  },
+  "security": {
+    "title": "Sicurezza e password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "confirmPassword": "Conferma nuova password",
+    "save": "Modifica password",
+    "saving": "Modifica della password…",
+    "success": "Password modificata correttamente. La tua sessione rimane attiva.",
+    "errors": {
+      "currentIncorrect": "La password attuale non è corretta.",
+      "unchanged": "Scegli una nuova password diversa da quella attuale.",
+      "validation": "Controlla le informazioni della password e riprova.",
+      "failed": "Non è stato possibile modificare la password. Riprova."
+    },
+    "generator": {
+      "title": "Generatore password",
+      "description": "Genera una password di 16 caratteri con lettere maiuscole e minuscole, numeri e caratteri speciali.",
+      "password": "Password generata",
+      "generate": "Genera password",
+      "regenerate": "Rigenera password",
+      "copy": "Copia password",
+      "use": "Usa questa password",
+      "copied": "Password copiata.",
+      "copyFailed": "Copia non riuscita. Seleziona la password e copiala manualmente.",
+      "failed": "Non è stato possibile generare una password sicura. Riprova.",
+      "used": "Password copiata negli appunti e inserita nei due campi della nuova password. Salva per confermare la modifica.",
+      "usedCopyFailed": "La password è stata inserita nei due campi, ma la copia negli appunti non è riuscita. Seleziona la password generata e copiala manualmente prima di salvare."
+    }
   }
 }

@@ -6,6 +6,14 @@ export interface ProfileInput {
   firstName: string;
   lastName: string;
 }
+export const CHANGE_PASSWORD: TypedDocumentNode<
+  { changePassword: boolean },
+  { input: { currentPassword: string; newPassword: string } }
+> = gql`
+  mutation ChangePassword($input: ChangePasswordInput!) {
+    changePassword(input: $input)
+  }
+`;
 export interface DeletedVehicle {
   id: string;
   brand: string;

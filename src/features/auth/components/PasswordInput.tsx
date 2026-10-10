@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
+import './PasswordInput.css';
 
 export function PasswordInput(props: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export function PasswordInput(props: Omit<InputHTMLAttributes<HTMLInputElement>,
         className="password-input__toggle"
         disabled={props.disabled}
         aria-label={visible ? t('common:actions.hidePassword') : t('common:actions.showPassword')}
+        title={visible ? t('common:actions.hidePassword') : t('common:actions.showPassword')}
         aria-pressed={visible}
         onClick={() => setVisible(!visible)}
       >

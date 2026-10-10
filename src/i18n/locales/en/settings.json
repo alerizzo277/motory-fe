@@ -31,5 +31,34 @@
     "vehiclesFailed": "We could not load deleted vehicles. Please try again.",
     "restoreFailed": "We could not restore the vehicle. Please try again.",
     "restoreUnavailable": "This vehicle is unavailable for recovery. Its recovery period may have expired."
+  },
+  "security": {
+    "title": "Security and password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "save": "Change password",
+    "saving": "Changing password…",
+    "success": "Password changed successfully. You are still signed in.",
+    "errors": {
+      "currentIncorrect": "The current password is incorrect.",
+      "unchanged": "Choose a new password different from your current password.",
+      "validation": "Check your password information and try again.",
+      "failed": "We could not change your password. Please try again."
+    },
+    "generator": {
+      "title": "Password generator",
+      "description": "Generate a 16-character password with uppercase and lowercase letters, numbers, and special characters.",
+      "password": "Generated password",
+      "generate": "Generate password",
+      "regenerate": "Regenerate password",
+      "copy": "Copy password",
+      "use": "Use this password",
+      "copied": "Password copied.",
+      "copyFailed": "Unable to copy. Select the password and copy it manually.",
+      "failed": "Unable to generate a secure password. Please try again.",
+      "used": "Password copied to the clipboard and entered in both new password fields. Save to confirm the change.",
+      "usedCopyFailed": "The password has been entered in both fields, but copying to the clipboard failed. Select the generated password and copy it manually before saving."
+    }
   }
 }

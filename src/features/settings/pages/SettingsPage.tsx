@@ -37,6 +37,7 @@ export function SettingsPage() {
         {(
           [
             { title: 'profile', path: '/settings/profile', icon: 'person' },
+            { title: 'security.title', path: '/settings/security', icon: 'lock' },
             { title: 'deletedVehicles', path: '/settings/deleted-vehicles', icon: 'deleted' },
           ] as const
         ).map((entry) => (

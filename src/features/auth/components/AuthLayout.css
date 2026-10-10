@@ -66,28 +66,6 @@
   font-size: 0.875rem;
 }
 
-.password-input {
-  position: relative;
-}
-.password-input input {
-  padding-right: 56px;
-}
-.password-input__toggle {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  min-height: 40px;
-  width: 44px;
-  padding: 8px;
-  margin: 0;
-  background: transparent;
-  color: var(--color-text-secondary);
-  display: grid;
-  place-items: center;
-}
-.password-input__toggle:hover:not(:disabled) {
-  background: var(--color-background);
-}
 .auth-actions {
   margin-top: var(--space-6);
 }

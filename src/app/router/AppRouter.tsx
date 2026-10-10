@@ -20,6 +20,7 @@ import { RegisterPage } from '../../features/auth/pages/RegisterPage';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
 import { HomePage } from '../../features/home/pages/HomePage';
 import { SettingsPage } from '../../features/settings/pages/SettingsPage';
+import { SecurityPage } from '../../features/settings/pages/SecurityPage';
 import { ProfilePage } from '../../features/settings/pages/ProfilePage';
 import { DeletedVehiclesPage } from '../../features/settings/pages/DeletedVehiclesPage';
 function AuthRoute({ protectedRoute }: { protectedRoute: boolean }) {
@@ -110,6 +111,10 @@ const router = createBrowserRouter(
         element={<ResetPasswordPage />}
       />
       <Route element={<AuthRoute protectedRoute />}>
+        <Route
+          path="/settings/security"
+          element={<SecurityPage />}
+        />
         <Route
           path="/settings"
           element={<SettingsPage />}

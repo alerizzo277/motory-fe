@@ -1,2 +1,6 @@
-interface ImportMetaEnv { readonly VITE_GRAPHQL_URL: string }
-interface ImportMeta { readonly env: ImportMetaEnv }
+interface ImportMetaEnv {
+  readonly VITE_GRAPHQL_URL: string;
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

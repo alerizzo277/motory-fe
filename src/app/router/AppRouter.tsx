@@ -1,3 +1,4 @@
+import { AppProviders } from '../providers/AppProviders';
 import { useTranslation } from 'react-i18next';
 import { VerifyEmailPage } from '../../features/auth/pages/VerifyEmailPage';
 import { EmailRequestPage } from '../../features/auth/pages/EmailRequestPage';
@@ -58,7 +59,13 @@ function AppLayout() {
 }
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<AppLayout />}>
+    <Route
+      element={
+        <AppProviders>
+          <AppLayout />
+        </AppProviders>
+      }
+    >
       <Route
         path="/"
         element={

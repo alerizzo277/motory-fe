@@ -95,3 +95,12 @@
 .app-toolbar__menu button {
   width: 100%;
 }
+
+.app-toolbar__home {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: var(--radius-control);
+  text-decoration: none;
+}

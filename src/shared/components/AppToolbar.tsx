@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,14 @@ export function AppToolbar({ showUser = false }: { showUser?: boolean }) {
   const language = i18n.resolvedLanguage === 'en' ? 'en' : 'it';
   return (
     <header className="app-toolbar">
-      <BrandLogo />
+      <Link
+        className="app-toolbar__home"
+        to="/home"
+        aria-label={t('common:toolbar.home')}
+        title={t('common:toolbar.home')}
+      >
+        <BrandLogo />
+      </Link>
       <div className="app-toolbar__actions">
         <div className="app-toolbar__language">
           <span aria-hidden="true">{language.toUpperCase()}</span>

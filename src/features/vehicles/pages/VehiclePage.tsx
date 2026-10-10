@@ -1,5 +1,6 @@
+import { VehicleNavigation } from '../components/VehicleNavigation';
 import { useQuery } from '@apollo/client/react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { VEHICLE } from '../api/operations';
 import { vehicleErrorKey } from '../api/errors';
@@ -14,6 +15,7 @@ export function VehiclePage() {
   });
   return (
     <main className="vehicle-page vehicle-panel">
+      {(loading || error) && <VehicleNavigation />}
       {loading ? (
         <p role="status">{t('loading')}</p>
       ) : error ? (
@@ -26,12 +28,6 @@ export function VehiclePage() {
           >
             {t('retry')}
           </button>
-          <Link
-            className="vehicle-back"
-            to="/home"
-          >
-            {t('backHome')}
-          </Link>
         </>
       ) : (
         <VehicleForm

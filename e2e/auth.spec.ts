@@ -575,4 +575,7 @@ test('toolbar remains usable while session verification is loading or fails', as
   await page.getByRole('combobox').selectOption('it');
   await expect(page.getByRole('heading', { name: 'Connessione non riuscita' })).toBeVisible();
   await expect(page.getByRole('banner')).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Motory — Torna alla home', exact: true }),
+  ).toHaveAttribute('href', '/home');
 });

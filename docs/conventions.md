@@ -120,3 +120,11 @@ Do not impose arbitrary file or component line limits, a custom hook for every G
 - Translate application errors through stable backend codes and preserve field mapping. Store translation keys or structured results in state so visible feedback updates when language changes. Never expose backend messages.
 - Resolve language from a supported stored preference, then the browser primary language subtag, then Italian. Persist only explicit selections through the centralized language helpers.
 - Prefer native `Intl.DateTimeFormat` and `Intl.NumberFormat` with the selected language when formatting is needed. Do not add unnecessary i18n dependencies, detection plugins, or translation backends.
+
+## 14. UI actions and icon buttons
+
+- Prefer icon-only buttons for recognizable secondary actions such as edit, back, and delete; use descriptive text for primary actions such as creating or saving resources.
+- Give every icon-only action an accessible name and a localized tooltip when appropriate. Do not rely on hover tooltips alone to communicate its purpose.
+- Maintain touch-friendly targets of at least 44 × 44 CSS pixels, visible keyboard focus, and mobile-first responsiveness.
+- Use consistent icon dimensions and spacing. Prefer existing icons or lightweight SVGs; do not introduce an icon library without explicit approval.
+- Destructive actions must include appropriate confirmation when necessary.

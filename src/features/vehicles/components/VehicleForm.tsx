@@ -1,7 +1,8 @@
+import { VehicleNavigation } from './VehicleNavigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useApolloClient } from '@apollo/client/react';
-import { Link, useBlocker, useNavigate } from 'react-router-dom';
+import { useBlocker, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { validationErrorFields } from '../../../graphql/client/errors';
 import { CREATE_VEHICLE, UPDATE_VEHICLE } from '../api/operations';
@@ -89,23 +90,23 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   }
   return (
     <>
+      <VehicleNavigation
+        onEdit={
+          !editing
+            ? () => {
+                allowLeave.current = false;
+                setDraft(vehicleDraft(vehicle));
+                setEditing(true);
+                setSaved(false);
+              }
+            : undefined
+        }
+      />
       <div className="vehicle-page__heading">
         <div>
           <p className="vehicle-eyebrow">{t('details')}</p>
           <h1>{vehicle ? `${vehicle.brand} ${vehicle.model}` : t('createTitle')}</h1>
         </div>
-        {!editing && (
-          <button
-            onClick={() => {
-              allowLeave.current = false;
-              setDraft(vehicleDraft(vehicle));
-              setEditing(true);
-              setSaved(false);
-            }}
-          >
-            {t('edit')}
-          </button>
-        )}
       </div>
       {saved && <p role="status">{t('saved')}</p>}
       {editing ? (
@@ -233,12 +234,6 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
           </dl>
         )
       )}
-      <Link
-        className="vehicle-back"
-        to="/home"
-      >
-        {t('backHome')}
-      </Link>
       {blocker.state === 'blocked' && (
         <dialog
           ref={confirmation}
